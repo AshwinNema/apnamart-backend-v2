@@ -1,0 +1,28 @@
+model MerchantDetails {
+  id                Int      @id @default(autoincrement())
+  isMerchantBlocked Boolean  @default(false)
+  user              User?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  archive           Boolean  @default(false)
+}
+
+model Product {
+  id              Int           @id @default(autoincrement())
+  name            String
+  price           Float
+  photos          String[]
+  thumbNail       String
+  description     String
+  rating          Float
+  item            Item          @relation(fields: [itemId], references: [id])
+  itemId          Int
+  featureOption   FeatureOption @relation(fields: [featureOptionId], references: [id])
+  featureOptionId Int
+  user            User          @relation(fields: [merchant], references: [id])
+  merchant        Int
+  orderItem       OrderItem[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  archive         Boolean       @default(false)
+}
