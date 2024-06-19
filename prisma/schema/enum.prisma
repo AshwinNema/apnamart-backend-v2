@@ -1,0 +1,16 @@
+enum UserRole {
+  customer
+  admin
+  merchant
+}
+
+enum PaymentMode {
+  stripe
+  razorpay
+  cash
+}
+
+enum OrderCancellationEntity {
+  merchant
+  user
+}

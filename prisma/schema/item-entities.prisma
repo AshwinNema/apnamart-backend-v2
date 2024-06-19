@@ -1,0 +1,63 @@
+model Category {
+  id          Int           @id @default(autoincrement())
+  name        String
+  photo       String
+  subCategory SubCategory[]
+  item        Item[]
+  user        User          @relation(fields: [createdBy], references: [id])
+  createdBy   Int
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  archive     Boolean       @default(false)
+}
+
+model SubCategory {
+  id         Int      @id @default(autoincrement())
+  name       String
+  photo      String
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  item       Item[]
+  user       User     @relation(fields: [createdBy], references: [id])
+  createdBy  Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  archive    Boolean  @default(false)
+}
+
+model Feature {
+  id        Int             @id @default(autoincrement())
+  name      String
+  options   FeatureOption[]
+  user      User            @relation(fields: [createdBy], references: [id])
+  createdBy Int
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  archive   Boolean         @default(false)
+}
+
+model FeatureOption {
+  id        Int       @id @default(autoincrement())
+  feature   Feature   @relation(fields: [featureId], references: [id])
+  featureId Int
+  product   Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  archive   Boolean   @default(false)
+}
+
+model Item {
+  id            Int         @id @default(autoincrement())
+  name          String
+  photo         String
+  category      Category    @relation(fields: [categoryId], references: [id])
+  categoryId    Int
+  subCategory   SubCategory @relation(fields: [subCategoryId], references: [id])
+  subCategoryId Int
+  user          User        @relation(fields: [createdBy], references: [id])
+  product       Product[]
+  createdBy     Int
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  archive       Boolean     @default(false)
+}
