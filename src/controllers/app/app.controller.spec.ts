@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
 
-
 describe('AppController', () => {
   let appController: AppController;
 
@@ -13,5 +12,4 @@ describe('AppController', () => {
 
     appController = app.get<AppController>(AppController);
   });
-
 });
