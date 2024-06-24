@@ -14,3 +14,9 @@ enum OrderCancellationEntity {
   merchant
   user
 }
+
+enum TokenType {
+  refresh
+  access
+  verify_email
+}
