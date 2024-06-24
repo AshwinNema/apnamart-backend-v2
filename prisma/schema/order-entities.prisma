@@ -1,8 +1,9 @@
 model Rating {
   id              Int        @id @default(autoincrement())
-  rating          Float
+  rating          Float?
   userFeedback    String?
-  orderRating     Order?
+  order           Order      @relation(fields: [orderId], references: [id])
+  orderId         Int        @unique
   orderItemRating OrderItem?
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
@@ -11,8 +12,8 @@ model Rating {
 
 model OrderItem {
   id        Int      @id @default(autoincrement())
-  quantity  Int
-  price     Int
+  quantity  Float
+  price     Float
   product   Product  @relation(fields: [productId], references: [id])
   productId Int
   order     Order    @relation(fields: [orderId], references: [id])
@@ -38,8 +39,7 @@ model Order {
   razorpayPaymentId  String?
   stripePaymentId    String?
   orderItems         OrderItem[]
-  rating             Rating?                  @relation(fields: [ratingId], references: [id])
-  ratingId           Int?                     @unique
+  rating             Rating?
   createdAt          DateTime                 @default(now())
   updatedAt          DateTime                 @updatedAt
   archive            Boolean                  @default(false)

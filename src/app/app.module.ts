@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import { AppController } from '../controllers/app/app.controller';
-import { PrismaService } from '../services/prisma/prisma.service';
+import { AppController } from './app.controller';
+import { PrismaService } from '../prisma/prisma.service';
 import { RouterModule } from '@nestjs/core';
-import { AdminModule } from './admin.module';
-import { CustomerModule } from './customer.module';
-import { MerchantModule } from './merchant.module';
+import { AdminModule } from '../admin/admin.module';
+import { CustomerModule } from '../customer/customer.module';
+import { MerchantModule } from '../merchant/merchant.module';
 import { ConfigModule } from '@nestjs/config';
 import { validateConfig } from '../config/config';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
@@ -14,7 +15,16 @@ import { validateConfig } from '../config/config';
     CustomerModule,
     MerchantModule,
     AdminModule,
+    AuthModule,
     RouterModule.register([
+      {
+        path: 'auth',
+        module: AuthModule,
+      },
+      {
+        path: 'admin',
+        module: AdminModule,
+      },
       {
         path: 'customer',
         module: CustomerModule,
@@ -22,10 +32,6 @@ import { validateConfig } from '../config/config';
       {
         path: 'merchant',
         module: MerchantModule,
-      },
-      {
-        path: 'admin',
-        module: AdminModule,
       },
     ]),
   ],

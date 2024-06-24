@@ -1,7 +1,8 @@
 model MerchantDetails {
   id                Int      @id @default(autoincrement())
   isMerchantBlocked Boolean  @default(false)
-  user              User?
+  user              User     @relation(fields: [userId], references: [id])
+  userId            Int      @unique
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
   archive           Boolean  @default(false)
@@ -19,7 +20,7 @@ model Product {
   itemId          Int
   featureOption   FeatureOption @relation(fields: [featureOptionId], references: [id])
   featureOptionId Int
-  user            User          @relation(fields: [merchant], references: [id])
+  User            User          @relation(fields: [merchant], references: [id])
   merchant        Int
   orderItem       OrderItem[]
   createdAt       DateTime      @default(now())
