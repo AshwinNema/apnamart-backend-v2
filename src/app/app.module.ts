@@ -8,7 +8,6 @@ import { MerchantModule } from '../merchant/merchant.module';
 import { ConfigModule } from '@nestjs/config';
 import { validateConfig } from '../config/config';
 import { AuthModule } from 'src/auth/auth.module';
-import { UserService } from 'src/user/user.service';
 
 @Module({
   imports: [

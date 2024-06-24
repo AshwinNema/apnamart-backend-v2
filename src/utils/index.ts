@@ -5,7 +5,10 @@ export const getTokenExpiration = (expirationSec: number): Date => {
   return eexpirationDate;
 };
 
-export const excludeUserFields = (data: User[] | User) => {
+export const excludeUserFields = (data: User[] | User | undefined | null) => {
+  if (!data) {
+    return;
+  }
   if (Array.isArray(data)) {
     return data.map((user: User) => {
       delete user.password;

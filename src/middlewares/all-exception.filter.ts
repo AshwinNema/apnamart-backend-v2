@@ -4,7 +4,6 @@ import {
   ArgumentsHost,
   HttpException,
   HttpStatus,
-  PayloadTooLargeException,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import logger from 'src/config/logger';

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
 import { TokenType } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { getTokenExpiration } from 'src/utils';

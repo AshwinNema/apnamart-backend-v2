@@ -15,5 +15,7 @@ export class AuthController {
 
   @SkipAccessAuth()
   @Post('login')
-  async login(@Body() loginCredentails: loginValidation) {}
+  async login(@Body() loginCredentails: loginValidation) {
+    return this.authService.login(loginCredentails);
+  }
 }

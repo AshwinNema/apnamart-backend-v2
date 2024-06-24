@@ -10,7 +10,13 @@ async function passwordModification({ args, query }) {
 }
 
 export const prismaExtension = Prisma.defineExtension({
-  model: {},
+  model: {
+    user: {
+      async isPasswordMatch(password: string, expectedPassword: string) {
+        return bcrypt.compare(password, expectedPassword);
+      },
+    },
+  },
   query: {
     user: {
       async update(queryParams) {
