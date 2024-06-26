@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { TokenType } from '@prisma/client';
+import { TokenTypes } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { getTokenExpiration } from 'src/utils';
 import * as jwt from 'jsonwebtoken';
@@ -16,7 +16,7 @@ export class TokenService {
     token: string,
     userId: number,
     expires: Date,
-    type: TokenType,
+    type: TokenTypes,
     blackListed: boolean = false,
   ) {
     const savedToken = await this.prismaService.token.create({
@@ -60,19 +60,19 @@ export class TokenService {
     const accessToken = this.generateToken(
       userId,
       currentTime + accessTokenExpiration,
-      TokenType.access,
+      TokenTypes.access,
       access_secret,
     );
     const refreshToken = this.generateToken(
       userId,
       currentTime + refreshTokenExpiration,
-      TokenType.refresh,
+      TokenTypes.refresh,
       refresh_secret,
     );
     const accessExpDate = getTokenExpiration(accessTokenExpiration);
     const refreshExpDate = getTokenExpiration(refreshTokenExpiration);
-    this.saveToken(accessToken, userId, accessExpDate, TokenType.access);
-    this.saveToken(refreshToken, userId, refreshExpDate, TokenType.refresh);
+    this.saveToken(accessToken, userId, accessExpDate, TokenTypes.access);
+    this.saveToken(refreshToken, userId, refreshExpDate, TokenTypes.refresh);
 
     return {
       access: {
@@ -84,5 +84,22 @@ export class TokenService {
         expires: new Date(refreshExpDate).toISOString(),
       },
     };
+  }
+
+  async verifyToken(token: string, type: TokenTypes, secret: string) {
+    const tokenPayload = jwt.verify(token, secret);
+    const userToken = await this.prismaService.token.findFirst({
+      where: {
+        token: token,
+        type,
+        userId: Number(tokenPayload.sub),
+        blackListed: false,
+      },
+    });
+
+    if (!userToken) {
+      throw new NotFoundException('Token not found');
+    }
+    return userToken;
   }
 }

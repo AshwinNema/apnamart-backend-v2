@@ -1,11 +1,11 @@
 model Token {
-  id          Int       @id @default(autoincrement())
-  token       String
-  type        TokenType
-  user        User      @relation(fields: [userId], references: [id])
+  id          Int        @id @default(autoincrement())
+  token       String     @unique
+  type        TokenTypes
+  user        User       @relation(fields: [userId], references: [id])
   userId      Int
-  blackListed Boolean   @default(false)
+  blackListed Boolean    @default(false)
   expires     DateTime
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 }

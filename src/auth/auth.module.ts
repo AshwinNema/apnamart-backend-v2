@@ -10,6 +10,7 @@ import { TokenService } from 'src/token/token.service';
 import { AdminService } from 'src/admin/admin.service';
 import { envConfig } from 'src/config/config';
 import { UserService } from 'src/user/user.service';
+import { TokenService2 } from 'src/token/token2.service';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { UserService } from 'src/user/user.service';
     AdminService,
     JwtAccessStrategy,
     ExtendedClient,
+    TokenService2,
     {
       provide: APP_GUARD,
       useClass: JwtAccessAuthGuard,
