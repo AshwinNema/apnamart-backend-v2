@@ -18,3 +18,14 @@ export const excludeUserFields = (data: User[] | User | undefined | null) => {
   delete data.password;
   return data;
 };
+
+export const passwordValidation = {
+  regex: /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8}$/,
+  message:
+    'password should contain 1 capital letter, 1 number and should have a length of atleast 8 characters',
+};
+
+export enum NonAdminRoles {
+  merchant,
+  customer,
+}

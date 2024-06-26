@@ -15,8 +15,8 @@ enum OrderCancellationEntity {
   user
 }
 
-enum TokenType {
+enum TokenTypes {
   refresh
   access
-  verify_email
+  // verify_email
 }
