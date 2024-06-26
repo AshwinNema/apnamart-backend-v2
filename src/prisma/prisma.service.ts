@@ -23,22 +23,3 @@ async function passwordModification({ args, query }) {
 
   return query(args);
 }
-
-export class ExtendedClient {
-  prisma: any;
-  constructor() {
-    this.prisma = new PrismaClient().$extends({
-      model: {},
-      query: {
-        user: {
-          async update(queryParams) {
-            return passwordModification(queryParams);
-          },
-          async create(queryParams) {
-            return passwordModification(queryParams);
-          },
-        },
-      },
-    });
-  }
-}

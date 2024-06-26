@@ -1,10 +1,8 @@
 import * as morgan from 'morgan';
-
 import logger from './logger';
 import { Request, Response } from 'express';
 import { environments } from './config';
 import { ConfigService } from '@nestjs/config';
-
 const env = new ConfigService().get('env');
 
 morgan.token(

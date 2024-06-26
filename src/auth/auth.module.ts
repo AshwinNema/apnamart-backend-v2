@@ -5,12 +5,12 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAccessStrategy, JwtAccessAuthGuard } from './jwt/access.jwt';
-import { ExtendedClient, PrismaService } from 'src/prisma/prisma.service';
 import { TokenService } from 'src/token/token.service';
 import { AdminService } from 'src/admin/admin.service';
 import { envConfig } from 'src/config/config';
 import { UserService } from 'src/user/user.service';
 import { TokenService2 } from 'src/token/token2.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Module({
   imports: [
@@ -31,13 +31,13 @@ import { TokenService2 } from 'src/token/token2.service';
     AuthService,
     AdminService,
     JwtAccessStrategy,
-    ExtendedClient,
     TokenService2,
+    PrismaService,
     {
       provide: APP_GUARD,
       useClass: JwtAccessAuthGuard,
     },
-    PrismaService,
+
     TokenService,
     UserService,
   ],

@@ -1,5 +1,4 @@
 import { User } from '@prisma/client';
-
 export const getTokenExpiration = (expirationSec: number): Date => {
   const eexpirationDate = new Date();
   eexpirationDate.setSeconds(eexpirationDate.getSeconds() + expirationSec);

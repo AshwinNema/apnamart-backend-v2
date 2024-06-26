@@ -12,6 +12,8 @@ export class TokenService2 {
   }
 
   async deleteMany(deleteFilter) {
-    return this.prismaService.token.deleteMany(deleteFilter);
+    return this.prismaService.token.deleteMany({
+      where: deleteFilter,
+    });
   }
 }
