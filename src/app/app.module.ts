@@ -8,14 +8,18 @@ import { MerchantModule } from '../merchant/merchant.module';
 import { ConfigModule } from '@nestjs/config';
 import { validateConfig } from '../config/config';
 import { AuthModule } from 'src/auth/auth.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { CronModule } from 'src/cron/cron.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, validate: validateConfig }),
+    ScheduleModule.forRoot(),
     CustomerModule,
     MerchantModule,
     AdminModule,
     AuthModule,
+    CronModule,
     RouterModule.register([
       {
         path: 'auth',
@@ -36,6 +40,6 @@ import { AuthModule } from 'src/auth/auth.module';
     ]),
   ],
   controllers: [AppController],
-  providers: [PrismaService],
+  providers: [],
 })
 export class AppModule {}
