@@ -9,13 +9,13 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
 import { envConfig } from 'src/config/config';
-import { TokenType } from '@prisma/client';
+import { TokenTypes } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class JwtAccessStrategy extends PassportStrategy(
   Strategy,
-  TokenType.access,
+  TokenTypes.access,
 ) {
   constructor(private prismaService: PrismaService) {
     super({
@@ -26,7 +26,7 @@ export class JwtAccessStrategy extends PassportStrategy(
   }
 
   async validate(payload: any) {
-    if (payload?.sub !== TokenType.access) {
+    if (payload?.sub !== TokenTypes.access) {
       return null;
     }
     const userId = parseInt(payload.sub);
@@ -38,7 +38,7 @@ export class JwtAccessStrategy extends PassportStrategy(
 }
 
 @Injectable()
-export class JwtAccessAuthGuard extends AuthGuard(TokenType.access) {
+export class JwtAccessAuthGuard extends AuthGuard(TokenTypes.access) {
   constructor(private reflector: Reflector) {
     super();
   }
