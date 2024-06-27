@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
 import { validateConfig } from '../config/config';
@@ -7,6 +7,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { CronModule } from 'src/cron/cron.module';
 import { ItemEntitiesModule } from 'src/item-entities/item-entities.module';
 import { UserEntitesModule } from 'src/user-entites/user-entites.module';
+import { RequestStartTimeTracker } from 'src/middlewares/logger-startTime-tracker';
 
 @Module({
   imports: [
@@ -20,4 +21,8 @@ import { UserEntitesModule } from 'src/user-entites/user-entites.module';
   controllers: [AppController],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestStartTimeTracker).forRoutes('*');
+  }
+}
