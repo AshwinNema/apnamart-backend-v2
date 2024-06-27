@@ -6,11 +6,12 @@ import { PassportModule } from '@nestjs/passport';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAccessStrategy, JwtAccessAuthGuard } from './jwt/access.jwt';
 import { TokenService } from 'src/token/token.service';
-import { AdminService } from 'src/admin/admin.service';
+import { AdminService } from 'src/user-entites/admin/admin.service';
 import { envConfig } from 'src/config/config';
 import { UserService } from 'src/user/user.service';
 import { TokenService2 } from 'src/token/token2.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { RolesGuard } from './role/role.guard';
 
 @Module({
   imports: [
@@ -37,7 +38,10 @@ import { PrismaService } from 'src/prisma/prisma.service';
       provide: APP_GUARD,
       useClass: JwtAccessAuthGuard,
     },
-
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
     TokenService,
     UserService,
   ],

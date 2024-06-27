@@ -27,7 +27,7 @@ export class JwtAccessStrategy extends PassportStrategy(
   }
 
   async validate(payload: any) {
-    if (payload?.sub !== TokenTypes.access) {
+    if (payload?.type !== TokenTypes.access) {
       return null;
     }
     const userId = parseInt(payload.sub);
@@ -72,5 +72,5 @@ export class JwtAccessAuthGuard extends AuthGuard(TokenTypes.access) {
   }
 }
 
-export const skipAuthKey = 'skipAuthKey';
+const skipAuthKey = 'skipAuthKey';
 export const SkipAccessAuth = () => SetMetadata(skipAuthKey, true);
