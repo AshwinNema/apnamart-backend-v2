@@ -15,11 +15,3 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     this.prisma = new PrismaClient().$extends(prismaExtension);
   }
 }
-
-async function passwordModification({ args, query }) {
-  if (args.data.password) {
-    args.data.password = await bcrypt.hash(args.data.password, 8);
-  }
-
-  return query(args);
-}
