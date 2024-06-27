@@ -4,18 +4,23 @@ import {
   ArgumentsHost,
   HttpException,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+  private readonly logger: Logger;
+  constructor(private readonly httpAdapterHost: HttpAdapterHost) {
+    this.logger = new Logger('Error Logger');
+  }
 
   catch(exception: any, host: ArgumentsHost): void {
     const { httpAdapter } = this.httpAdapterHost;
 
     const ctx = host.switchToHttp();
     const request = ctx.getRequest();
+    const response = ctx.getResponse();
     const requestUrl = httpAdapter.getRequestUrl(request);
     const errorResponse =
       exception instanceof HttpException ? exception.getResponse() : exception;
@@ -40,6 +45,17 @@ export class AllExceptionsFilter implements ExceptionFilter {
       path: requestUrl,
       message: errorMsg,
     };
+
+    response.on('finish', () => {
+      if (request.isLogged) {
+        return;
+      }
+
+      const duration = Date.now() - request.startTime;
+      this.logger.error(
+        `${request.method} ${request.url} ${httpStatus} ${duration} ms ${errorMsg}`,
+      );
+    });
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }
