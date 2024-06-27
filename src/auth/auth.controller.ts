@@ -14,7 +14,7 @@ import { TokenTypes } from '@prisma/client';
 import { TokenService2 } from 'src/token/token2.service';
 
 @SkipAccessAuth()
-@Controller()
+@Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
