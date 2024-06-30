@@ -11,13 +11,14 @@ import { Reflector } from '@nestjs/core';
 import { envConfig } from 'src/config/config';
 import { TokenTypes } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class JwtAccessStrategy extends PassportStrategy(
   Strategy,
   TokenTypes.access,
 ) {
-  constructor(private prismaService: PrismaService) {
+  constructor(private userService: UserService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -31,10 +32,7 @@ export class JwtAccessStrategy extends PassportStrategy(
       return null;
     }
     const userId = parseInt(payload.sub);
-
-    return this.prismaService.user.findUnique({
-      where: { id: userId },
-    });
+    return this.userService.findUnique({ id: userId });
   }
 }
 

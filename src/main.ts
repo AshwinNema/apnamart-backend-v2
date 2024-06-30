@@ -1,12 +1,16 @@
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import { RequestMethod, ValidationPipe } from '@nestjs/common';
+import {
+  BadRequestException,
+  RequestMethod,
+  ValidationPipe,
+} from '@nestjs/common';
 import { AppModule } from './app/app.module';
 import helmet from 'helmet';
 import * as compression from 'compression';
 import { ConfigService } from '@nestjs/config';
-
 import { AllExceptionsFilter } from './middlewares/all-exception.filter';
 import { LoggingInterceptor } from './logger/logger.interceptor';
+import { ValidationError } from 'class-validator';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -22,7 +26,22 @@ async function bootstrap() {
 
   app.use(helmet());
   app.use(compression());
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      exceptionFactory(errors: ValidationError[]) {
+        return new BadRequestException(
+          errors
+            .map((error: ValidationError) => {
+              return Object.values(error.constraints).join(', ');
+            })
+            .join(', '),
+        );
+      },
+    }),
+  );
   app.useGlobalInterceptors(new LoggingInterceptor());
   app.useGlobalFilters(new AllExceptionsFilter(adapterHost));
   await app.listen(port);

@@ -16,8 +16,8 @@ model Product {
   thumbNail       String
   description     String
   rating          Float
-  item            Item          @relation(fields: [itemId], references: [id])
-  itemId          Int
+  subCategory     SubCategory   @relation(fields: [subCategoryId], references: [id])
+  subCategoryId   Int
   featureOption   FeatureOption @relation(fields: [featureOptionId], references: [id])
   featureOptionId Int
   User            User          @relation(fields: [merchant], references: [id])

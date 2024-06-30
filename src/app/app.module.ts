@@ -8,6 +8,7 @@ import { CronModule } from 'src/cron/cron.module';
 import { ItemEntitiesModule } from 'src/item-entities/item-entities.module';
 import { UserEntitesModule } from 'src/user-entites/user-entites.module';
 import { RequestStartTimeTracker } from 'src/middlewares/logger-startTime-tracker';
+import { NestjsFormDataModule } from 'nestjs-form-data';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { RequestStartTimeTracker } from 'src/middlewares/logger-startTime-tracke
     CronModule,
     ItemEntitiesModule,
     UserEntitesModule,
+    NestjsFormDataModule,
   ],
   controllers: [AppController],
   providers: [],
