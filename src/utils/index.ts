@@ -1,11 +1,15 @@
 import { User } from '@prisma/client';
+import { FormattedUser } from '../interfaces';
+
 export const getTokenExpiration = (expirationSec: number): Date => {
-  const eexpirationDate = new Date();
-  eexpirationDate.setSeconds(eexpirationDate.getSeconds() + expirationSec);
-  return eexpirationDate;
+  const expirationDate = new Date();
+  expirationDate.setSeconds(expirationDate.getSeconds() + expirationSec);
+  return expirationDate;
 };
 
-export const excludeUserFields = (data: User[] | User | undefined | null) => {
+export const excludeUserFields = (
+  data: User[] | User | undefined | null,
+): FormattedUser | FormattedUser[] => {
   if (!data) {
     return;
   }

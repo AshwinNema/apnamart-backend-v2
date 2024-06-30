@@ -33,8 +33,10 @@ export class LoggingInterceptor implements NestInterceptor {
         const [request, response] = context.getArgs();
         const { statusCode } = response;
         const responseMsg = err?.response?.message;
+
         let errorMessage = err.message;
-        if (responseMsg) {
+
+        if (responseMsg && errorMessage !== responseMsg) {
           errorMessage += ' ';
           if (Array.isArray(responseMsg)) {
             errorMessage += responseMsg.join(', ');
@@ -44,6 +46,7 @@ export class LoggingInterceptor implements NestInterceptor {
             errorMessage += `${responseMsg}`;
           }
         }
+        response.message = errorMessage;
 
         this.logger.error(
           `${request.method} ${request.url} ${statusCode} ${duration} ms ${errorMessage}`,

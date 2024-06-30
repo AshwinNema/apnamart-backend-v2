@@ -29,10 +29,14 @@ export class AllExceptionsFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? errorResponse?.message
         : exception?.message;
+
     if (Array.isArray(errorMsg)) {
       errorMsg = errorMsg.join(', ');
     } else if (typeof errorMsg === 'object') {
       errorMsg = JSON.stringify(errorMsg);
+    }
+    if (response?.message && response?.message != errorMsg) {
+      errorMsg += ` ${response?.message}`;
     }
     const httpStatus =
       exception instanceof HttpException
