@@ -17,28 +17,27 @@ model WishList {
 }
 
 model User {
-  id                  Int              @id @default(autoincrement())
-  name                String
-  email               String           @unique
-  password            String?
-  userRoles           UserRole[]
-  address             String?
-  phoneNo             String?
-  photo               String?
+  id                   Int              @id @default(autoincrement())
+  name                 String
+  email                String           @unique
+  password             String?
+  userRoles            UserRole[]
+  address              String?
+  phoneNo              String?
+  photo                String?
   cloudinary_public_id String?
-  cart                Cart?
-  wishList            WishList?
-  merchant            MerchantDetails?
-  token               Token[]
-  category            Category[]
-  subCategory         SubCategory[]
-  item                Item[]
-  feature             Feature[]
-  product             Product[]
-  orderMerchant       Order[]          @relation("OrderMerchant")
-  orderCustomer       Order[]          @relation("OrderCustomer")
-  createdAt           DateTime         @default(now())
-  updatedAt           DateTime         @updatedAt
-  isBlackListed       Boolean          @default(false)
-  archive             Boolean          @default(false)
+  cart                 Cart?
+  wishList             WishList?
+  merchant             MerchantDetails?
+  token                Token[]
+  category             Category[]
+  subCategory          SubCategory[]
+  feature              Feature[]
+  product              Product[]
+  orderMerchant        Order[]          @relation("OrderMerchant")
+  orderCustomer        Order[]          @relation("OrderCustomer")
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+  isBlackListed        Boolean          @default(false)
+  archive              Boolean          @default(false)
 }

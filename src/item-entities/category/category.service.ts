@@ -45,6 +45,6 @@ export class CategoryService {
     return this.cloudinaryService.updatePrismaEntityFile('category', id, file);
   }
   async getCategories() {
-    return this.prismaService.category.findMany({})
+    return this.prismaService.category.findMany({});
   }
 }

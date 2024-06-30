@@ -9,7 +9,7 @@ import {
   ParseIntPipe,
   UseInterceptors,
   UploadedFile,
-  Get
+  Get,
 } from '@nestjs/common';
 import { UserRole } from '@prisma/client';
 import { FormDataRequest } from 'nestjs-form-data';
@@ -30,7 +30,7 @@ export class CategoryController {
   @Get()
   @SkipAccessAuth()
   getCategory() {
-    return this.categoryService.getCategories()
+    return this.categoryService.getCategories();
   }
 
   @Post()
