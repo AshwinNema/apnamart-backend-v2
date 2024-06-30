@@ -23,3 +23,8 @@ export interface ValidatedObject {
 export interface CreateCategoryData {
   name: string;
 }
+
+export interface CreateSubCategoryData {
+  name: string;
+  categoryId: number;
+}

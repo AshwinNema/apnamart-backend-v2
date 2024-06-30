@@ -13,7 +13,7 @@ export class CategoryService {
   ) {}
 
   async getUnqiueCategory(filter: Prisma.CategoryWhereUniqueInput) {
-    return this.prismaService.category.findFirstOrThrow({
+    return this.prismaService.category.findUnique({
       where: filter,
     });
   }
