@@ -11,7 +11,7 @@ export const excludeUserFields = (
   data: User[] | User | undefined | null,
 ): FormattedUser | FormattedUser[] => {
   if (!data) {
-    return;
+    return data;
   }
   if (Array.isArray(data)) {
     return data.map((user: User) => {

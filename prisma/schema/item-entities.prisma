@@ -1,28 +1,32 @@
 model Category {
-  id          Int           @id @default(autoincrement())
-  name        String
-  photo       String
-  subCategory SubCategory[]
-  item        Item[]
-  user        User          @relation(fields: [createdBy], references: [id])
-  createdBy   Int
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  archive     Boolean       @default(false)
+  id                  Int           @id @default(autoincrement())
+  name                String        @unique
+  photo               String
+  cloudinary_public_id String
+  subCategory         SubCategory[]
+  item                Item[]
+  user                User          @relation(fields: [createdBy], references: [id])
+  createdBy           Int
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  archive             Boolean       @default(false)
 }
 
 model SubCategory {
-  id         Int      @id @default(autoincrement())
-  name       String
-  photo      String
-  category   Category @relation(fields: [categoryId], references: [id])
-  categoryId Int
-  item       Item[]
-  user       User     @relation(fields: [createdBy], references: [id])
-  createdBy  Int
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  archive    Boolean  @default(false)
+  id                  Int      @id @default(autoincrement())
+  name                String
+  photo               String
+  cloudinary_public_id String
+  category            Category @relation(fields: [categoryId], references: [id])
+  categoryId          Int
+  item                Item[]
+  user                User     @relation(fields: [createdBy], references: [id])
+  createdBy           Int
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  archive             Boolean  @default(false)
+
+  @@unique([name, categoryId])
 }
 
 model Feature {
@@ -30,10 +34,14 @@ model Feature {
   name      String
   options   FeatureOption[]
   user      User            @relation(fields: [createdBy], references: [id])
+  item      Item            @relation(fields: [itemId], references: [id])
+  itemId    Int
   createdBy Int
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
   archive   Boolean         @default(false)
+
+  @@unique([itemId, name])
 }
 
 model FeatureOption {
@@ -47,17 +55,21 @@ model FeatureOption {
 }
 
 model Item {
-  id            Int         @id @default(autoincrement())
-  name          String
-  photo         String
-  category      Category    @relation(fields: [categoryId], references: [id])
-  categoryId    Int
-  subCategory   SubCategory @relation(fields: [subCategoryId], references: [id])
-  subCategoryId Int
-  user          User        @relation(fields: [createdBy], references: [id])
-  product       Product[]
-  createdBy     Int
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  archive       Boolean     @default(false)
+  id                  Int         @id @default(autoincrement())
+  name                String
+  photo               String
+  cloudinary_public_id String
+  category            Category    @relation(fields: [categoryId], references: [id])
+  categoryId          Int
+  subCategory         SubCategory @relation(fields: [subCategoryId], references: [id])
+  subCategoryId       Int
+  user                User        @relation(fields: [createdBy], references: [id])
+  product             Product[]
+  features            Feature[]
+  createdBy           Int
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+  archive             Boolean     @default(false)
+
+  @@unique([name, categoryId, subCategoryId])
 }
