@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { User } from 'src/interfaces';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { excludeUserFields } from 'src/utils';
 
@@ -6,7 +7,7 @@ import { excludeUserFields } from 'src/utils';
 export class UserService {
   constructor(private prismaService: PrismaService) {}
 
-  async createUser(data) {
+  async createUser(data): Promise<User | User[]> {
     const newUser = await this.prismaService.prisma.user.create({
       data,
     });
@@ -14,7 +15,7 @@ export class UserService {
     return excludeUserFields(newUser);
   }
 
-  async findUnique(filter: any, omitPassword: boolean = true) {
+  async findUnique(filter, omitPassword: boolean = true) {
     const user = await this.prismaService.prisma.user.findUnique({
       where: filter,
     });

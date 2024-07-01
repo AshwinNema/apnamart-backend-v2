@@ -1,5 +1,5 @@
 import { User } from '@prisma/client';
-import { FormattedUser } from '../interfaces';
+import { User as OmittedUser } from '../interfaces';
 
 export const getTokenExpiration = (expirationSec: number): Date => {
   const expirationDate = new Date();
@@ -9,7 +9,7 @@ export const getTokenExpiration = (expirationSec: number): Date => {
 
 export const excludeUserFields = (
   data: User[] | User | undefined | null,
-): FormattedUser | FormattedUser[] => {
+): OmittedUser | OmittedUser[] => {
   if (!data) {
     return data;
   }
