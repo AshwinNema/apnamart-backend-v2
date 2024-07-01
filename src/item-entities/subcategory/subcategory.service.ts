@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { CreateSubCategoryData, FormattedUser } from 'src/interfaces';
+import { CreateSubCategoryData, User } from 'src/interfaces';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CloudinaryService } from 'src/uploader/cloudinary/cloudinary.service';
 import { CloudinaryResponse } from '../../utils/types';
@@ -21,7 +21,7 @@ export class SubcategoryService {
   async createSubCategory(
     body: CreateSubCategoryData,
     file: Express.Multer.File,
-    user: FormattedUser,
+    user: User,
   ) {
     const uploadedFile: CloudinaryResponse =
       await this.cloudinaryService.uploadFile(file);
