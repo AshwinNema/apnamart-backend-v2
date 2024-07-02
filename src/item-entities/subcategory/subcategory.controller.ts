@@ -3,7 +3,6 @@ import {
   Controller,
   Post,
   UsePipes,
-  Request,
   Get,
   Put,
   Param,
@@ -24,6 +23,7 @@ import { SubcategoryService } from './subcategory.service';
 import { CreateSubCategoryData } from 'src/interfaces';
 import { SkipAccessAuth } from 'src/auth/jwt/access.jwt';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { User } from 'src/user/user.decorator';
 
 @Controller('subcategory')
 export class SubcategoryController {
@@ -39,9 +39,9 @@ export class SubcategoryController {
   @Roles(UserRole.admin)
   @FormDataRequest()
   @UsePipes(new MultiPartDataPipe(SubCategoryValidatior))
-  createSubCategory(@Body() body: CreateSubCatValidation, @Request() req) {
+  createSubCategory(@Body() body: CreateSubCatValidation, @User() user) {
     const data: CreateSubCategoryData = Object(body.data);
-    return this.subCategoryService.createSubCategory(data, body.file, req.user);
+    return this.subCategoryService.createSubCategory(data, body.file, user);
   }
 
   @Put('image/:id')

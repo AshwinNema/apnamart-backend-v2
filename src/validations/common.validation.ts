@@ -77,6 +77,9 @@ export class MultiPartDataPipe<T extends object> implements PipeTransform {
     this.validatorClass = validatorClass;
   }
   async transform(value: MultiPartData, metadata: ArgumentMetadata) {
+    if (metadata.type !== 'body') {
+      return value;
+    }
     const parsedData = JSON.parse(value.data);
     const { error, message } = await validateObject(
       parsedData,

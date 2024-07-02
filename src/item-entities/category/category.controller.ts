@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Post,
-  Request,
   UsePipes,
   Put,
   Param,
@@ -23,6 +22,7 @@ import { CategoryService } from './category.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SkipAccessAuth } from 'src/auth/jwt/access.jwt';
 import { CreateCategoryData } from 'src/interfaces';
+import { User } from 'src/user/user.decorator';
 
 @Controller('category')
 export class CategoryController {
@@ -38,9 +38,9 @@ export class CategoryController {
   @Roles(UserRole.admin)
   @FormDataRequest()
   @UsePipes(new MultiPartDataPipe(CategoryValidator))
-  createCategory(@Body() body: CreateCatValidation, @Request() req) {
+  createCategory(@User() user, @Body() body: CreateCatValidation) {
     const data: CreateCategoryData = Object(body.data);
-    return this.categoryService.createCategory(data, body.file, req.user);
+    return this.categoryService.createCategory(data, body.file, user);
   }
 
   @Put('image/:id')
