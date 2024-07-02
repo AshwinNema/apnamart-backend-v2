@@ -11,7 +11,7 @@ import {
 } from 'src/validations';
 import { TokenService } from 'src/token/token.service';
 import { AdminService } from 'src/user-entites/admin/admin.service';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/user-entites/user/user.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { excludeUserFields } from 'src/utils';
 import { UserRole } from '@prisma/client';
