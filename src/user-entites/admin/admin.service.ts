@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserRole } from '@prisma/client';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/user-entites/user/user.service';
 import { RegisterAdminValidator } from 'src/validations';
 
 @Injectable()
