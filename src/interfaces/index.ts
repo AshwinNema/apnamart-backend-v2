@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 
-export type User = Omit<Prisma.UserMinAggregateOutputType, 'password'>;
+export type UserInterface = Omit<Prisma.UserMinAggregateOutputType, 'password'>;
 
 export interface ValidatedObject {
   error: boolean;

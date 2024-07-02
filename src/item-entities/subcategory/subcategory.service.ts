@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { CreateSubCategoryData, User } from 'src/interfaces';
+import { CreateSubCategoryData, UserInterface } from 'src/interfaces';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CloudinaryService } from 'src/uploader/cloudinary/cloudinary.service';
 import { CloudinaryResponse } from '../../utils/types';
@@ -21,10 +21,16 @@ export class SubcategoryService {
   async createSubCategory(
     body: CreateSubCategoryData,
     file: Express.Multer.File,
-    user: User,
+    user: UserInterface,
   ) {
-    if (await this.prismaService.subCategory.findFirst({where:{name: body.name, categoryId: body.categoryId}})) {
-      throw new BadRequestException("Sub category with the given name already present for category")
+    if (
+      await this.prismaService.subCategory.findFirst({
+        where: { name: body.name, categoryId: body.categoryId },
+      })
+    ) {
+      throw new BadRequestException(
+        'Sub category with the given name already present for category',
+      );
     }
 
     const uploadedFile: CloudinaryResponse =

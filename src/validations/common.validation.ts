@@ -5,14 +5,8 @@ import {
   ValidationError,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { ClassConstructor, MultiPartData } from '../utils/types';
+import { ClassConstructor } from '../utils/types';
 import { ValidatedObject } from '../interfaces';
-import {
-  ArgumentMetadata,
-  Injectable,
-  PipeTransform,
-  UnprocessableEntityException,
-} from '@nestjs/common';
 
 export const validateObject = async <T extends object>(
   object: object,
@@ -67,29 +61,5 @@ export class GenericDataValidator<T extends object>
   }
   defaultMessage(): string {
     return this.errorMsg;
-  }
-}
-
-@Injectable()
-export class MultiPartDataPipe<T extends object> implements PipeTransform {
-  validatorClass: ClassConstructor<T>;
-  constructor(validatorClass?: ClassConstructor<T>) {
-    this.validatorClass = validatorClass;
-  }
-  async transform(value: MultiPartData, metadata: ArgumentMetadata) {
-    if (metadata.type !== 'body') {
-      return value;
-    }
-    const parsedData = JSON.parse(value.data);
-    const { error, message } = await validateObject(
-      parsedData,
-      this.validatorClass,
-      { whitelist: true, forbidNonWhitelisted: true },
-    );
-    if (error) {
-      throw new UnprocessableEntityException(message);
-    }
-    value.data = JSON.parse(value.data);
-    return value;
   }
 }

@@ -14,16 +14,19 @@ import {
 import { Roles } from 'src/auth/role/role.guard';
 import { UserRole } from '@prisma/client';
 import { FormDataRequest } from 'nestjs-form-data';
-import { MultiPartDataPipe } from 'src/validations';
 import {
   CreateSubCatValidation,
   SubCategoryValidatior,
 } from 'src/validations/subcategory.validation';
 import { SubcategoryService } from './subcategory.service';
-import { CreateSubCategoryData } from 'src/interfaces';
+import { CreateSubCategoryData, UserInterface } from 'src/interfaces';
 import { SkipAccessAuth } from 'src/auth/jwt/access.jwt';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { User } from 'src/user-entites/user/user.decorator';
+
+// import { User } from 'src/user-entites/user/user.decorator';
+import { MultiPartDataPipe, } from 'src/pipes';
+import { User } from 'src/decorators';
+
 
 @Controller('subcategory')
 export class SubcategoryController {
@@ -39,7 +42,7 @@ export class SubcategoryController {
   @Roles(UserRole.admin)
   @FormDataRequest()
   @UsePipes(new MultiPartDataPipe(SubCategoryValidatior))
-  createSubCategory(@Body() body: CreateSubCatValidation, @User() user) {
+  createSubCategory(@Body() body: CreateSubCatValidation, @User() user:UserInterface) {
     const data: CreateSubCategoryData = Object(body.data);
     return this.subCategoryService.createSubCategory(data, body.file, user);
   }
