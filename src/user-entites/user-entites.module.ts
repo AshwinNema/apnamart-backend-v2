@@ -1,9 +1,17 @@
 import { Module } from '@nestjs/common';
-import { AdminModule } from 'src/user-entites/admin/admin.module';
-import { CustomerModule } from 'src/user-entites/customer/customer.module';
-import { MerchantModule } from 'src/user-entites/merchant/merchant.module';
+import { AdminController } from './admin/admin.controller';
+import { AdminService } from './admin/admin.service';
+import { CustomerController } from './customer/customer.controller';
+import { CustomerService } from './customer/customer.service';
+import { MerchantController } from './merchant/merchant.controller';
+import { MerchantService } from './merchant/merchant.service';
+import { NestjsFormDataModule } from 'nestjs-form-data';
+import { UploaderModule } from 'src/uploader/uploader.module';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Module({
-  imports: [CustomerModule, AdminModule, MerchantModule],
+  imports: [NestjsFormDataModule, UploaderModule],
+  providers: [PrismaService, MerchantService, AdminService, CustomerService],
+  controllers: [MerchantController, AdminController, CustomerController],
 })
 export class UserEntitesModule {}
