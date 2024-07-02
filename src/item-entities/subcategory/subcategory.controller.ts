@@ -23,7 +23,7 @@ import { SubcategoryService } from './subcategory.service';
 import { CreateSubCategoryData } from 'src/interfaces';
 import { SkipAccessAuth } from 'src/auth/jwt/access.jwt';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { User } from 'src/user/user.decorator';
+import { User } from 'src/user-entites/user/user.decorator';
 
 @Controller('subcategory')
 export class SubcategoryController {

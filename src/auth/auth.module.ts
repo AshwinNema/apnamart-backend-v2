@@ -6,16 +6,16 @@ import { PassportModule } from '@nestjs/passport';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAccessStrategy, JwtAccessAuthGuard } from './jwt/access.jwt';
 import { TokenService } from 'src/token/token.service';
-import { AdminService } from 'src/user-entites/admin/admin.service';
 import { envConfig } from 'src/config/config';
-import { UserService } from 'src/user/user.service';
 import { TokenService2 } from 'src/token/token2.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { RolesGuard } from './role/role.guard';
+import { UserEntitesModule } from 'src/user-entites/user-entites.module';
 
 @Module({
   imports: [
     PassportModule,
+    UserEntitesModule,
     JwtModule.register({
       global: true,
       secret: envConfig?.JWT_ACCESS_SECRET,
@@ -30,7 +30,6 @@ import { RolesGuard } from './role/role.guard';
   ],
   providers: [
     AuthService,
-    AdminService,
     JwtAccessStrategy,
     TokenService2,
     PrismaService,
@@ -43,7 +42,6 @@ import { RolesGuard } from './role/role.guard';
       useClass: RolesGuard,
     },
     TokenService,
-    UserService,
   ],
   controllers: [AuthController],
 })

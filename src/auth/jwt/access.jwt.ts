@@ -10,8 +10,7 @@ import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
 import { envConfig } from 'src/config/config';
 import { TokenTypes } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/user-entites/user/user.service';
 
 @Injectable()
 export class JwtAccessStrategy extends PassportStrategy(

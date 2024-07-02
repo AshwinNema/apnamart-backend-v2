@@ -22,7 +22,7 @@ import { CategoryService } from './category.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SkipAccessAuth } from 'src/auth/jwt/access.jwt';
 import { CreateCategoryData } from 'src/interfaces';
-import { User } from 'src/user/user.decorator';
+import { User } from 'src/user-entites/user/user.decorator';
 
 @Controller('category')
 export class CategoryController {
