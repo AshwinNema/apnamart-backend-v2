@@ -16,7 +16,7 @@ import { UserRole } from '@prisma/client';
 import { FormDataRequest } from 'nestjs-form-data';
 import {
   CreateSubCatValidation,
-  SubCategoryValidatior,
+  SubCategoryValidator,
 } from 'src/validations/subcategory.validation';
 import { SubcategoryService } from './subcategory.service';
 import { SubCategoryInterface } from 'src/interfaces';
@@ -29,7 +29,7 @@ import {
   subCategoryCreateProcessor,
 } from './subcategory.util';
 
-@Controller('subcategory')
+@Controller()
 export class SubcategoryController {
   constructor(private subCategoryService: SubcategoryService) {}
 
@@ -43,7 +43,7 @@ export class SubcategoryController {
   @Roles(UserRole.admin)
   @UsePipes(new SubCatCrtDataPipe())
   @UsePipes(
-    new MultiPartDataPipe(SubCategoryValidatior, subCategoryCreateProcessor),
+    new MultiPartDataPipe(SubCategoryValidator, subCategoryCreateProcessor),
   )
   @FormDataRequest()
   createSubCategory(

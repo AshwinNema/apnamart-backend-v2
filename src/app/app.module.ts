@@ -22,6 +22,7 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
   ],
   controllers: [AppController],
   providers: [],
+  exports: [],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

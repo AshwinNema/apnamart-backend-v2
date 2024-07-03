@@ -12,47 +12,47 @@ model Category {
 }
 
 model SubCategory {
-  id                   Int       @id @default(autoincrement())
+  id                   Int                 @id @default(autoincrement())
   name                 String
   photo                String
   cloudinary_public_id String
-  category             Category  @relation(fields: [categoryId], references: [id])
+  category             Category            @relation(fields: [categoryId], references: [id])
   categoryId           Int
-  user                 User      @relation(fields: [createdBy], references: [id])
-  features             Feature[]
+  user                 User                @relation(fields: [createdBy], references: [id])
+  filters              SubCategoryFilter[]
   product              Product[]
   createdBy            Int
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
-  archive              Boolean   @default(false)
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  archive              Boolean             @default(false)
 
   @@unique([name, categoryId])
 }
 
-model Feature {
-  id            Int             @id @default(autoincrement())
+model SubCategoryFilter {
+  id            Int                       @id @default(autoincrement())
   name          String
-  options       FeatureOption[]
-  user          User            @relation(fields: [createdBy], references: [id])
-  subCategory   SubCategory     @relation(fields: [subCategoryId], references: [id])
+  options       SubCategoryFilterOption[]
+  user          User                      @relation(fields: [createdBy], references: [id])
+  subCategory   SubCategory               @relation(fields: [subCategoryId], references: [id])
   subCategoryId Int
   createdBy     Int
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  archive       Boolean         @default(false)
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+  archive       Boolean                   @default(false)
 
   @@unique([subCategoryId, name])
 }
 
-model FeatureOption {
-  id        Int       @id @default(autoincrement())
+model SubCategoryFilterOption {
+  id        Int               @id @default(autoincrement())
   name      String
-  feature   Feature   @relation(fields: [featureId], references: [id])
+  feature   SubCategoryFilter @relation(fields: [featureId], references: [id])
   featureId Int
   product   Product[]
-  user      User      @relation(fields: [createdBy], references: [id])
+  user      User              @relation(fields: [createdBy], references: [id])
   createdBy Int
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  archive   Boolean   @default(false)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  archive   Boolean           @default(false)
 }
