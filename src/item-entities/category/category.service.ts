@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { CreateCategoryData, User } from 'src/interfaces';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { CreateCategoryData, UserInterface } from 'src/interfaces';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CloudinaryService } from 'src/uploader/cloudinary/cloudinary.service';
 import { CloudinaryResponse } from '../../utils/types';
@@ -21,8 +21,15 @@ export class CategoryService {
   async createCategory(
     data: CreateCategoryData,
     file: Express.Multer.File,
-    user: User,
+    user: UserInterface,
   ) {
+    if (
+      await this.prismaService.category.findUnique({
+        where: { name: data.name },
+      })
+    ) {
+      throw new BadRequestException('Category with this name already present');
+    }
     const uploadedFile: CloudinaryResponse =
       await this.cloudinaryService.uploadFile(file);
 

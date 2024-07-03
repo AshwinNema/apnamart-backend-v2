@@ -1,5 +1,6 @@
 import { User } from '@prisma/client';
-import { User as OmittedUser } from '../interfaces';
+import { UserInterface } from '../interfaces';
+import { ValidationError } from 'class-validator';
 
 export const getTokenExpiration = (expirationSec: number): Date => {
   const expirationDate = new Date();
@@ -9,7 +10,7 @@ export const getTokenExpiration = (expirationSec: number): Date => {
 
 export const excludeUserFields = (
   data: User[] | User | undefined | null,
-): OmittedUser | OmittedUser[] => {
+): UserInterface | UserInterface[] => {
   if (!data) {
     return data;
   }
@@ -33,3 +34,17 @@ export enum NonAdminRoles {
   merchant,
   customer,
 }
+
+export const processNestedValidationError = (errors: ValidationError[]) => {
+  return errors
+    .map((error: ValidationError) => {
+      if (error.constraints) {
+        return Object.values(error.constraints).join(', ');
+      }
+      if (error.children) {
+        return processNestedValidationError(error.children);
+      }
+      return '';
+    })
+    .join(', ');
+};

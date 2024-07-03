@@ -34,6 +34,7 @@ model User {
   subCategory          SubCategory[]
   feature              Feature[]
   product              Product[]
+  featureOption        FeatureOption[]
   orderMerchant        Order[]          @relation("OrderMerchant")
   orderCustomer        Order[]          @relation("OrderCustomer")
   createdAt            DateTime         @default(now())
