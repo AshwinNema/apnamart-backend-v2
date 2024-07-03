@@ -11,7 +11,7 @@ export interface CreateCategoryData {
   name: string;
 }
 
-export interface CreateSubCategoryData {
+export interface SubCategoryInterface {
   name: string;
   categoryId: number;
 }

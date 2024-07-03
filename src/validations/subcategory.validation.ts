@@ -1,5 +1,15 @@
-import { IsNotEmpty, IsString, IsInt, Min } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsInt,
+  Min,
+  IsArray,
+  IsOptional,
+  ValidateNested,
+  ArrayMinSize,
+} from 'class-validator';
 import { HasMimeType, IsFile, MaxFileSize } from 'nestjs-form-data';
+import { FeatureSubCatValidation } from './feature.validation';
 
 export class SubCategoryValidatior {
   @IsString()
@@ -9,6 +19,11 @@ export class SubCategoryValidatior {
   @IsInt()
   @Min(1)
   categoryId: number;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested()
+  features: FeatureSubCatValidation[];
 }
 
 export class CreateSubCatValidation {

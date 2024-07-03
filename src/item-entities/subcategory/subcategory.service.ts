@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { CreateSubCategoryData, UserInterface } from 'src/interfaces';
+import { SubCategoryInterface, UserInterface } from 'src/interfaces';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CloudinaryService } from 'src/uploader/cloudinary/cloudinary.service';
 import { CloudinaryResponse } from '../../utils/types';
@@ -19,9 +19,8 @@ export class SubcategoryService {
   }
 
   async createSubCategory(
-    body: CreateSubCategoryData,
+    body: Prisma.SubCategoryUncheckedCreateInput,
     file: Express.Multer.File,
-    user: UserInterface,
   ) {
     if (
       await this.prismaService.subCategory.findFirst({
@@ -40,7 +39,6 @@ export class SubcategoryService {
         ...body,
         photo: uploadedFile.secure_url,
         cloudinary_public_id: uploadedFile.public_id,
-        createdBy: user.id,
       },
     });
   }

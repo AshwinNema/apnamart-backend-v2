@@ -1,10 +1,12 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { HasMimeType, IsFile, MaxFileSize } from 'nestjs-form-data';
+import { FeatureValidation } from './feature.validation';
 
 export class CategoryValidator {
   @IsString()
   @IsNotEmpty()
   name: string;
+  features: FeatureValidation[];
 }
 
 export class CreateCatValidation {

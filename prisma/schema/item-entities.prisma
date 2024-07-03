@@ -25,6 +25,7 @@ model SubCategory {
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
   archive              Boolean   @default(false)
+
   @@unique([name, categoryId])
 }
 
@@ -35,20 +36,22 @@ model Feature {
   user          User            @relation(fields: [createdBy], references: [id])
   subCategory   SubCategory     @relation(fields: [subCategoryId], references: [id])
   subCategoryId Int
-
-  createdBy Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  archive   Boolean  @default(false)
+  createdBy     Int
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  archive       Boolean         @default(false)
 
   @@unique([subCategoryId, name])
 }
 
 model FeatureOption {
   id        Int       @id @default(autoincrement())
+  name      String
   feature   Feature   @relation(fields: [featureId], references: [id])
   featureId Int
   product   Product[]
+  user      User      @relation(fields: [createdBy], references: [id])
+  createdBy Int
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   archive   Boolean   @default(false)

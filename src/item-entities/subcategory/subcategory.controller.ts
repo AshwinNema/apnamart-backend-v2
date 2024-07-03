@@ -19,14 +19,15 @@ import {
   SubCategoryValidatior,
 } from 'src/validations/subcategory.validation';
 import { SubcategoryService } from './subcategory.service';
-import { CreateSubCategoryData, UserInterface } from 'src/interfaces';
+import { SubCategoryInterface } from 'src/interfaces';
 import { SkipAccessAuth } from 'src/auth/jwt/access.jwt';
 import { FileInterceptor } from '@nestjs/platform-express';
-
-// import { User } from 'src/user-entites/user/user.decorator';
-import { MultiPartDataPipe, } from 'src/pipes';
-import { User } from 'src/decorators';
-
+import { MultiPartDataPipe } from 'src/pipes';
+import { RequestProcessor } from 'src/decorators';
+import {
+  SubCatCrtDataPipe,
+  subCategoryCreateProcessor,
+} from './subcategory.util';
 
 @Controller('subcategory')
 export class SubcategoryController {
@@ -40,11 +41,18 @@ export class SubcategoryController {
 
   @Post()
   @Roles(UserRole.admin)
+  @UsePipes(new SubCatCrtDataPipe())
+  @UsePipes(
+    new MultiPartDataPipe(SubCategoryValidatior, subCategoryCreateProcessor),
+  )
   @FormDataRequest()
-  @UsePipes(new MultiPartDataPipe(SubCategoryValidatior))
-  createSubCategory(@Body() body: CreateSubCatValidation, @User() user:UserInterface) {
-    const data: CreateSubCategoryData = Object(body.data);
-    return this.subCategoryService.createSubCategory(data, body.file, user);
+  createSubCategory(
+    @Body() _: CreateSubCatValidation,
+    @RequestProcessor() processedRequest,
+  ) {
+    const { body } = processedRequest;
+    const data = Object(processedRequest.body.data);
+    return this.subCategoryService.createSubCategory(data, body.file);
   }
 
   @Put('image/:id')
@@ -61,7 +69,7 @@ export class SubcategoryController {
   @Roles(UserRole.admin)
   updateSubCategory(
     @Param('id', ParseIntPipe) id: number,
-    @Body() body: SubCategoryValidatior,
+    @Body() body: SubCategoryInterface,
   ) {
     return this.subCategoryService.updateSubCategory(id, body);
   }

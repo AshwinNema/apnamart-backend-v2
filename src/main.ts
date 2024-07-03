@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { AllExceptionsFilter } from './middlewares/all-exception.filter';
 import { LoggingInterceptor } from './logger/logger.interceptor';
 import { ValidationError } from 'class-validator';
+import { processNestedValidationError } from './utils';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -32,13 +33,7 @@ async function bootstrap() {
       whitelist: true,
       forbidNonWhitelisted: true,
       exceptionFactory(errors: ValidationError[]) {
-        return new BadRequestException(
-          errors
-            .map((error: ValidationError) => {
-              return Object.values(error.constraints).join(', ');
-            })
-            .join(', '),
-        );
+        return new BadRequestException(processNestedValidationError(errors));
       },
     }),
   );

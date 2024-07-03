@@ -1,31 +1,34 @@
 import {
   ArgumentMetadata,
-  Inject,
   Injectable,
   PipeTransform,
-  Scope,
   UnprocessableEntityException,
 } from '@nestjs/common';
 
 import { MultiPartData, ClassConstructor } from '../utils/types';
-import { UserInterface } from '../interfaces';
 import { validateObject } from 'src/validations';
 
 @Injectable()
 export class MultiPartDataPipe<T extends object> implements PipeTransform {
   constructor(
-    private validatorClass?: ClassConstructor<T>,
+    private validatorClass: ClassConstructor<T>,
+    private dataProcessor?: (data: object) => object,
   ) {}
   async transform(value: MultiPartData, metadata: ArgumentMetadata) {
     if (metadata.type !== 'body') {
       return value;
     }
-    const parsedData = JSON.parse(value.data);
+    let parsedData = JSON.parse(value.data);
+    if (this.dataProcessor) {
+      parsedData = this.dataProcessor(parsedData);
+    }
+
     const { error, message } = await validateObject(
       parsedData,
       this.validatorClass,
       { whitelist: true, forbidNonWhitelisted: true },
     );
+
     if (error) {
       throw new UnprocessableEntityException(message);
     }
@@ -34,4 +37,29 @@ export class MultiPartDataPipe<T extends object> implements PipeTransform {
   }
 }
 
+export class BodyPipe<T extends object> implements PipeTransform {
+  constructor(
+    private validatorClass: ClassConstructor<T>,
+    private dataProcessor?: (data: object) => object,
+  ) {}
 
+  async transform(value: object, metadata: ArgumentMetadata) {
+    if (metadata.type !== 'body') {
+      return value;
+    }
+    let data = { ...value };
+    if (this.dataProcessor) {
+      data = this.dataProcessor(data);
+    }
+
+    const { error, message } = await validateObject(data, this.validatorClass, {
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    });
+    if (error) {
+      throw new UnprocessableEntityException(message);
+    }
+
+    return value;
+  }
+}

@@ -1,12 +1,8 @@
 import { plainToClass } from 'class-transformer';
-import {
-  validate,
-  ValidatorOptions,
-  ValidationError,
-  ValidatorConstraintInterface,
-} from 'class-validator';
+import { validate, ValidatorOptions, ValidationError } from 'class-validator';
 import { ClassConstructor } from '../utils/types';
 import { ValidatedObject } from '../interfaces';
+import { processNestedValidationError } from 'src/utils';
 
 export const validateObject = async <T extends object>(
   object: object,
@@ -17,13 +13,10 @@ export const validateObject = async <T extends object>(
 
   try {
     const errors: ValidationError[] = await validate(convertedObj, options);
+
     return {
       error: !!errors.length,
-      message: errors
-        .map((error: ValidationError) => {
-          return Object.values(error.constraints).join(', ');
-        })
-        .join(', '),
+      message: processNestedValidationError(errors),
     };
   } catch (err) {
     return {
@@ -32,34 +25,3 @@ export const validateObject = async <T extends object>(
     };
   }
 };
-
-export class GenericDataValidator<T extends object>
-  implements ValidatorConstraintInterface
-{
-  private errorMsg: string;
-  private validatorClass: ClassConstructor<T>;
-
-  constructor(
-    validatorClass: ClassConstructor<T>,
-    defaultError: string = 'Validation failed',
-  ) {
-    this.validatorClass = validatorClass;
-    this.errorMsg = defaultError;
-  }
-
-  // When validate returns true this means that validation is successful otherwise its a failure
-  // !error = Error occurred hence validation did not succeed.
-  async validate(data: string): Promise<boolean> {
-    const { error, message } = await validateObject(
-      JSON.parse(data),
-      this.validatorClass,
-    );
-    if (message) {
-      this.errorMsg = message;
-    }
-    return !error;
-  }
-  defaultMessage(): string {
-    return this.errorMsg;
-  }
-}

@@ -1,5 +1,6 @@
 import { User } from '@prisma/client';
 import { UserInterface } from '../interfaces';
+import { ValidationError } from 'class-validator';
 
 export const getTokenExpiration = (expirationSec: number): Date => {
   const expirationDate = new Date();
@@ -33,3 +34,17 @@ export enum NonAdminRoles {
   merchant,
   customer,
 }
+
+export const processNestedValidationError = (errors: ValidationError[]) => {
+  return errors
+    .map((error: ValidationError) => {
+      if (error.constraints) {
+        return Object.values(error.constraints).join(', ');
+      }
+      if (error.children) {
+        return processNestedValidationError(error.children);
+      }
+      return '';
+    })
+    .join(', ');
+};
