@@ -31,15 +31,16 @@ import prisma from 'src/prisma/client';
   providers: [],
   exports: [],
 })
-export class AppModule implements NestModule, OnModuleInit {
+export class AppModule implements  NestModule, OnModuleInit, OnModuleDestroy  {
+
   async onModuleInit() {
     await prisma.$connect();
   }
+  
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(RequestStartTimeTracker).forRoutes('*');
   }
-
-  async OnModuleDestroy() {
+  async onModuleDestroy() {
     await prisma.$disconnect();
   }
 }

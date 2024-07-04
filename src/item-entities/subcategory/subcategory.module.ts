@@ -7,7 +7,6 @@ import { SubCatFltrController } from './filter/filter.controller';
 import { SubCatFltrOptionController } from './filter-option/filter-option.controller';
 import { UploaderModule } from 'src/uploader/uploader.module';
 import { NestjsFormDataModule } from 'nestjs-form-data';
-import { PrismaService } from 'src/prisma/prisma.service';
 
 @Module({
   imports: [UploaderModule, NestjsFormDataModule],
@@ -15,7 +14,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
     SubcategoryService,
     SubCatFltrService,
     SubCatFltrOptService,
-    PrismaService,
   ],
   controllers: [
     SubcategoryController,

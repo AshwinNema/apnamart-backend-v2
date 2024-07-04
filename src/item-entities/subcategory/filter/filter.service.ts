@@ -1,20 +1,21 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import prisma from 'src/prisma/client';
+
 
 @Injectable()
 export class SubCatFltrService {
-  constructor(private prismaService: PrismaService) {}
+  constructor() {}
 
   getFilterById(where) {
-    return this.prismaService.subCategoryFilter.findUniqueOrThrow({ where });
+    return prisma.subCategoryFilter.findUniqueOrThrow({ where });
   }
 
   createFilter(data) {
-    return this.prismaService.subCategoryFilter.create({ data });
+    return prisma.subCategoryFilter.create({ data });
   }
 
   updateFilter(id, update) {
-    return this.prismaService.subCategoryFilter.update({
+    return prisma.subCategoryFilter.update({
       where: { id },
       data: update,
     });

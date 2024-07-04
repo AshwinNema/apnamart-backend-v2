@@ -33,19 +33,19 @@ export class SubCatCrtDataPipe implements PipeTransform {
     const { user, body } = value;
     body.data = JSON?.parse?.(body.data);
     body.data.createdBy = user.id;
-    if (body?.data?.features) {
-      body.data.features = {
-        create: body.data.features.map((feature) => {
-          if (feature?.options?.length) {
-            feature.options = {
-              create: feature.options.map((option) => {
+    if (body?.data?.filters) {
+      body.data.filters = {
+        create: body.data.filters.map((filter) => {
+          if (filter?.options?.length) {
+            filter.options = {
+              create: filter.options.map((option) => {
                 option.createdBy = user.id;
                 return option;
               }),
             };
           }
-          feature.createdBy = user.id;
-          return feature;
+          filter.createdBy = user.id;
+          return filter;
         }),
       };
     }
