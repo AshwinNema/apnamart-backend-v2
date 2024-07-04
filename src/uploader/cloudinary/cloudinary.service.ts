@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryResponse } from '../../utils/types';
-import { PrismaService } from 'src/prisma/prisma.service';
+import prisma from 'src/prisma/client';
 
 const streamifier = require('streamifier');
 
 @Injectable()
 export class CloudinaryService {
-  constructor(private prismaService: PrismaService) {}
+  constructor() {}
 
   uploadFile(file: Express.Multer.File): Promise<CloudinaryResponse> {
     return new Promise<CloudinaryResponse>((resolve, reject) => {
@@ -27,7 +27,7 @@ export class CloudinaryService {
   }
 
   async deletePrismaEntityFile(entity: string, id: number) {
-    const entityData = await this.prismaService[entity].findUniqueOrThrow({
+    const entityData = await prisma[entity].findUniqueOrThrow({
       where: { id },
     });
     const { cloudinary_public_id } = entityData;
@@ -40,7 +40,7 @@ export class CloudinaryService {
     file: Express.Multer.File,
   ) {
     const uploadedFile: CloudinaryResponse = await this.uploadFile(file);
-    return this.prismaService[entity].update({
+    return prisma[entity].update({
       where: { id },
       data: {
         photo: uploadedFile.secure_url,
