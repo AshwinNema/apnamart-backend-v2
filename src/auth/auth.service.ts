@@ -9,7 +9,7 @@ import {
   RegisterAdminValidator,
   registerUser,
 } from 'src/validations';
-import { TokenService } from 'src/token/token.service';
+import { TokenService } from 'src/auth/token/token.service';
 import { AdminService } from 'src/user-entites/admin/admin.service';
 import { UserService } from 'src/user-entites/user/user.service';
 import { excludeUserFields } from 'src/utils';
