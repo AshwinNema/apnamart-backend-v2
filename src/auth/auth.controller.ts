@@ -2,10 +2,10 @@ import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SkipAccessAuth } from './jwt/access.jwt';
 import {
-  registerAdmin,
-  loginValidation,
+  RegisterAdminValidator,
+  LoginValidator,
   registerUser,
-  refreshToken,
+  RefreshTokenValidator,
 } from 'src/validations/auth.validation';
 import { TokenService } from 'src/token/token.service';
 
@@ -24,12 +24,12 @@ export class AuthController {
   ) {}
 
   @Post('register-admin')
-  async registerAdmin(@Body() userDetails: registerAdmin) {
+  async registerAdmin(@Body() userDetails: RegisterAdminValidator) {
     return this.authService.registerAdmin(userDetails);
   }
 
   @Post('login')
-  async login(@Body() loginCredentails: loginValidation) {
+  async login(@Body() loginCredentails: LoginValidator) {
     return this.authService.login(loginCredentails);
   }
 
@@ -39,7 +39,7 @@ export class AuthController {
   }
 
   @Post('refresh-token')
-  async refreshToken(@Body() tokenDetails: refreshToken) {
+  async refreshToken(@Body() tokenDetails: RefreshTokenValidator) {
     const token = await this.tokenService.verifyToken(
       tokenDetails.token,
       TokenTypes.refresh,

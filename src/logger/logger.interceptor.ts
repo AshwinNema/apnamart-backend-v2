@@ -17,6 +17,8 @@ export class LoggingInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const startTime = Date.now();
+    const request = context.getArgByIndex(0);
+    request.isLogged = true;
     return next.handle().pipe(
       tap(() => {
         const duration = Date.now() - startTime;
@@ -31,8 +33,10 @@ export class LoggingInterceptor implements NestInterceptor {
         const [request, response] = context.getArgs();
         const { statusCode } = response;
         const responseMsg = err?.response?.message;
+
         let errorMessage = err.message;
-        if (responseMsg) {
+
+        if (responseMsg && errorMessage !== responseMsg) {
           errorMessage += ' ';
           if (Array.isArray(responseMsg)) {
             errorMessage += responseMsg.join(', ');
@@ -42,6 +46,7 @@ export class LoggingInterceptor implements NestInterceptor {
             errorMessage += `${responseMsg}`;
           }
         }
+        response.message = errorMessage;
 
         this.logger.error(
           `${request.method} ${request.url} ${statusCode} ${duration} ms ${errorMessage}`,

@@ -4,13 +4,17 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { loginValidation, registerAdmin, registerUser } from 'src/validations';
+import {
+  LoginValidator,
+  RegisterAdminValidator,
+  registerUser,
+} from 'src/validations';
 import { TokenService } from 'src/token/token.service';
 import { AdminService } from 'src/user-entites/admin/admin.service';
-import { UserService } from 'src/user/user.service';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { UserService } from 'src/user-entites/user/user.service';
 import { excludeUserFields } from 'src/utils';
 import { UserRole } from '@prisma/client';
+import prisma from 'src/prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -18,10 +22,9 @@ export class AuthService {
     private adminService: AdminService,
     private tokenService: TokenService,
     private userService: UserService,
-    private prismaService: PrismaService,
   ) {}
 
-  async registerAdmin(adminDetails: registerAdmin) {
+  async registerAdmin(adminDetails: RegisterAdminValidator) {
     const admin = await this.adminService.registerAdmin(adminDetails);
     const adminId = Array.isArray(admin) ? admin[0].id : admin.id;
     const tokens = await this.tokenService.generateAuthTokens(adminId);
@@ -34,7 +37,7 @@ export class AuthService {
     };
   }
 
-  async login(loginCredentails: loginValidation) {
+  async login(loginCredentails: LoginValidator) {
     const user = await this.userService.findUnique(
       { email: loginCredentails.email },
       false,
@@ -43,19 +46,18 @@ export class AuthService {
       throw new NotFoundException('User not found');
     }
     const { id: userId, password } = Array.isArray(user) ? user[0] : user;
-    const isPasswordMatch =
-      await this.prismaService.prisma.user.isPasswordMatch(
-        loginCredentails.password,
-        password,
-      );
-    user.role = loginCredentails.role;
+    const isPasswordMatch = await prisma.user.isPasswordMatch(
+      loginCredentails.password,
+      password,
+    );
+
     if (!isPasswordMatch) {
       throw new UnauthorizedException('Incorrect password');
     }
 
     const tokens = await this.tokenService.generateAuthTokens(userId);
     return {
-      user: excludeUserFields(user),
+      user: { ...excludeUserFields(user), role: loginCredentails.role },
       tokens,
     };
   }

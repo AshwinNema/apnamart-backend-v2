@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import prisma from 'src/prisma/client';
 
 @Injectable()
 export class TokenService2 {
-  constructor(private prismaService: PrismaService) {}
+  constructor() {}
 
   async deleteOneToken(deleteFilter) {
-    return this.prismaService.token.delete({
+    return prisma.token.delete({
       where: deleteFilter,
     });
   }
 
   async deleteMany(deleteFilter) {
-    return this.prismaService.token.deleteMany({
+    return prisma.token.deleteMany({
       where: deleteFilter,
     });
   }

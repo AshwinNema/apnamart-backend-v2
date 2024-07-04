@@ -1,4 +1,10 @@
-import { Module } from '@nestjs/common';
+import {
+  Module,
+  NestModule,
+  MiddlewareConsumer,
+  OnModuleInit,
+  OnModuleDestroy,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
 import { validateConfig } from '../config/config';
@@ -7,6 +13,9 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { CronModule } from 'src/cron/cron.module';
 import { ItemEntitiesModule } from 'src/item-entities/item-entities.module';
 import { UserEntitesModule } from 'src/user-entites/user-entites.module';
+import { RequestStartTimeTracker } from 'src/middlewares/logger-startTime-tracker';
+import { NestjsFormDataModule } from 'nestjs-form-data';
+import prisma from 'src/prisma/client';
 
 @Module({
   imports: [
@@ -16,8 +25,21 @@ import { UserEntitesModule } from 'src/user-entites/user-entites.module';
     CronModule,
     ItemEntitiesModule,
     UserEntitesModule,
+    NestjsFormDataModule,
   ],
   controllers: [AppController],
   providers: [],
+  exports: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule, OnModuleInit, OnModuleDestroy {
+  async onModuleInit() {
+    await prisma.$connect();
+  }
+
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestStartTimeTracker).forRoutes('*');
+  }
+  async onModuleDestroy() {
+    await prisma.$disconnect();
+  }
+}

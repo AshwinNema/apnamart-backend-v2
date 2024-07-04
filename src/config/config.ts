@@ -25,6 +25,9 @@ const envVarsSchema = z.object({
   JWT_REFRESH_EXPIRATION: z.coerce.number(),
   JWT_ACCESS_SECRET: z.string(),
   JWT_REFRESH_SECRET: z.string(),
+  CLOUDINARY_CLOUD_NAME: z.string(),
+  CLOUDINARY_API_KEY: z.string(),
+  CLOUDINARY_API_SECRET: z.string(),
 });
 
 export const validateConfig = (config: config) => {
@@ -38,6 +41,11 @@ export const validateConfig = (config: config) => {
       refresh_secret: configuration.JWT_REFRESH_SECRET,
       accessTokenExpiration: configuration.JWT_ACCESS_EXPIRATION,
       refreshTokenExpiration: configuration.JWT_REFRESH_EXPIRATION,
+    },
+    cloudinary: {
+      cloud_name: configuration.CLOUDINARY_CLOUD_NAME,
+      api_key: configuration.CLOUDINARY_API_KEY,
+      api_secret: configuration.CLOUDINARY_API_SECRET,
     },
   };
 };
