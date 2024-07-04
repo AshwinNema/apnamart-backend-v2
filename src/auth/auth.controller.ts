@@ -7,11 +7,11 @@ import {
   registerUser,
   RefreshTokenValidator,
 } from 'src/validations/auth.validation';
-import { TokenService } from 'src/token/token.service';
+import { TokenService } from 'src/auth/token/token.service';
 
 import { ConfigService } from '@nestjs/config';
 import { TokenTypes } from '@prisma/client';
-import { TokenService2 } from 'src/token/token2.service';
+import { TokenService2 } from 'src/auth/token/token2.service';
 
 @SkipAccessAuth()
 @Controller('auth')
