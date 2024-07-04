@@ -1,19 +1,16 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateCategoryData, UserInterface } from 'src/interfaces';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { CloudinaryService } from 'src/uploader/cloudinary/cloudinary.service';
 import { CloudinaryResponse } from '../../utils/types';
 import { Prisma } from '@prisma/client';
+import prisma from 'src/prisma/client';
 
 @Injectable()
 export class CategoryService {
-  constructor(
-    private prismaService: PrismaService,
-    private cloudinaryService: CloudinaryService,
-  ) {}
+  constructor(private cloudinaryService: CloudinaryService) {}
 
   async getUnqiueCategory(filter: Prisma.CategoryWhereUniqueInput) {
-    return this.prismaService.category.findUnique({
+    return prisma.category.findUnique({
       where: filter,
     });
   }
@@ -24,7 +21,7 @@ export class CategoryService {
     user: UserInterface,
   ) {
     if (
-      await this.prismaService.category.findUnique({
+      await prisma.category.findUnique({
         where: { name: data.name },
       })
     ) {
@@ -33,7 +30,7 @@ export class CategoryService {
     const uploadedFile: CloudinaryResponse =
       await this.cloudinaryService.uploadFile(file);
 
-    return this.prismaService.category.create({
+    return prisma.category.create({
       data: {
         ...data,
         photo: uploadedFile.secure_url,
@@ -44,7 +41,7 @@ export class CategoryService {
   }
 
   async updateCategory(id: number, update: Prisma.CategoryUpdateInput) {
-    return this.prismaService.category.update({ where: { id }, data: update });
+    return prisma.category.update({ where: { id }, data: update });
   }
 
   async updateCategoryImg(id: number, file: Express.Multer.File) {
@@ -52,6 +49,6 @@ export class CategoryService {
     return this.cloudinaryService.updatePrismaEntityFile('category', id, file);
   }
   async getCategories() {
-    return this.prismaService.category.findMany({});
+    return prisma.category.findMany({});
   }
 }

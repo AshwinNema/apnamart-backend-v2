@@ -1,19 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
+import prisma from 'src/prisma/client';
 
 @Injectable()
 export class FeatureService {
-  constructor(private prismaService: PrismaService) {}
+  constructor() {}
 
   getFeatureById(where) {
-    return this.prismaService.feature.findUniqueOrThrow({ where });
+    return prisma.feature.findUniqueOrThrow({ where });
   }
   createFeature(data) {
-    return this.prismaService.feature.create({ data });
+    return prisma.feature.create({ data });
   }
 
   updateFeature(id, update) {
-    return this.prismaService.feature.update({ where: { id }, data: update });
+    return prisma.feature.update({ where: { id }, data: update });
   }
 }

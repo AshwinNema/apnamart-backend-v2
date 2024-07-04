@@ -1,19 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { SubCategoryInterface, UserInterface } from 'src/interfaces';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { CloudinaryService } from 'src/uploader/cloudinary/cloudinary.service';
 import { CloudinaryResponse } from '../../utils/types';
+import prisma from 'src/prisma/client';
 
 @Injectable()
 export class SubcategoryService {
-  constructor(
-    private prismaService: PrismaService,
-    private cloudinaryService: CloudinaryService,
-  ) {}
+  constructor(private cloudinaryService: CloudinaryService) {}
 
   getUniqueSubCategory(filter: Prisma.SubCategoryWhereUniqueInput) {
-    return this.prismaService.subCategory.findUnique({
+    return prisma.subCategory.findUnique({
       where: filter,
     });
   }
@@ -23,7 +19,7 @@ export class SubcategoryService {
     file: Express.Multer.File,
   ) {
     if (
-      await this.prismaService.subCategory.findFirst({
+      await prisma.subCategory.findFirst({
         where: { name: body.name, categoryId: body.categoryId },
       })
     ) {
@@ -34,7 +30,7 @@ export class SubcategoryService {
 
     const uploadedFile: CloudinaryResponse =
       await this.cloudinaryService.uploadFile(file);
-    return this.prismaService.subCategory.create({
+    return prisma.subCategory.create({
       data: {
         ...body,
         photo: uploadedFile.secure_url,
@@ -44,7 +40,7 @@ export class SubcategoryService {
   }
 
   async updateSubCategory(id: number, update: Prisma.SubCategoryUpdateInput) {
-    return this.prismaService.subCategory.update({
+    return prisma.subCategory.update({
       where: { id },
       data: update,
     });
@@ -60,6 +56,6 @@ export class SubcategoryService {
   }
 
   getSubCategories() {
-    return this.prismaService.subCategory.findMany({});
+    return prisma.subCategory.findMany({});
   }
 }

@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import prisma from 'src/prisma/client';
 
 @Injectable()
 export class FeatureOptionService {
-  constructor(private prismaService: PrismaService) {}
+  constructor() {}
 
   createFeatureOption(data) {
-    return this.prismaService.featureOption.create({ data });
+    return prisma.featureOption.create({ data });
   }
 
   update(where, data) {
-    return this.prismaService.featureOption.update({ where, data });
+    return prisma.featureOption.update({ where, data });
   }
 }

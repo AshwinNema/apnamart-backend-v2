@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { User, UserRole } from '@prisma/client';
 import { UserInterface } from '../interfaces';
 import { ValidationError } from 'class-validator';
 
@@ -9,7 +9,7 @@ export const getTokenExpiration = (expirationSec: number): Date => {
 };
 
 export const excludeUserFields = (
-  data: User[] | User | undefined | null,
+  data: User[] | User,
 ): UserInterface | UserInterface[] => {
   if (!data) {
     return data;
@@ -30,10 +30,7 @@ export const passwordValidation = {
     'password should contain 1 capital letter, 1 number and should have a length of atleast 8 characters',
 };
 
-export enum NonAdminRoles {
-  merchant,
-  customer,
-}
+export type NonAdminRoles = Exclude<UserRole, 'admin'>;
 
 export const processNestedValidationError = (errors: ValidationError[]) => {
   return errors
