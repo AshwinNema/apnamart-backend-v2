@@ -9,21 +9,20 @@ model MerchantDetails {
 }
 
 model Product {
-  id              Int           @id @default(autoincrement())
-  name            String
-  price           Float
-  photos          String[]
-  thumbNail       String
-  description     String
-  rating          Float
-  item            Item          @relation(fields: [itemId], references: [id])
-  itemId          Int
-  featureOption   FeatureOption @relation(fields: [featureOptionId], references: [id])
-  featureOptionId Int
-  User            User          @relation(fields: [merchant], references: [id])
-  merchant        Int
-  orderItem       OrderItem[]
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  archive         Boolean       @default(false)
+  id            Int                       @id @default(autoincrement())
+  name          String
+  price         Float
+  photos        String[]
+  thumbNail     String
+  description   String
+  rating        Float
+  subCategory   SubCategory               @relation(fields: [subCategoryId], references: [id])
+  subCategoryId Int
+  filterOptions SubCategoryFilterOption[]
+  User          User                      @relation(fields: [merchant], references: [id])
+  merchant      Int
+  orderItem     OrderItem[]
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+  archive       Boolean                   @default(false)
 }

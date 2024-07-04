@@ -1,16 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TokenTypes } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { getTokenExpiration } from 'src/utils';
 import * as jwt from 'jsonwebtoken';
+import prisma from 'src/prisma/client';
 
 @Injectable()
 export class TokenService {
-  constructor(
-    private configService: ConfigService,
-    private prismaService: PrismaService,
-  ) {}
+  constructor(private configService: ConfigService) {}
 
   async saveToken(
     token: string,
@@ -19,7 +16,7 @@ export class TokenService {
     type: TokenTypes,
     blackListed: boolean = false,
   ) {
-    const savedToken = await this.prismaService.token.create({
+    const savedToken = await prisma.token.create({
       data: {
         token,
         userId,
@@ -88,7 +85,7 @@ export class TokenService {
 
   async verifyToken(token: string, type: TokenTypes, secret: string) {
     const tokenPayload = jwt.verify(token, secret);
-    const userToken = await this.prismaService.token.findFirst({
+    const userToken = await prisma.token.findFirst({
       where: {
         token: token,
         type,

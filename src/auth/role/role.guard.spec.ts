@@ -1,4 +1,4 @@
-import { RoleGuard } from './role.guard';
+import { RolesGuard } from './role.guard';
 
 describe('RoleGuard', () => {
   it('should be defined', () => {
