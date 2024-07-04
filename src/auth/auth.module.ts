@@ -8,7 +8,6 @@ import { JwtAccessStrategy, JwtAccessAuthGuard } from './jwt/access.jwt';
 import { TokenService } from 'src/token/token.service';
 import { envConfig } from 'src/config/config';
 import { TokenService2 } from 'src/token/token2.service';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { RolesGuard } from './role/role.guard';
 import { UserEntitesModule } from 'src/user-entites/user-entites.module';
 
@@ -32,7 +31,6 @@ import { UserEntitesModule } from 'src/user-entites/user-entites.module';
     AuthService,
     JwtAccessStrategy,
     TokenService2,
-    PrismaService,
     {
       provide: APP_GUARD,
       useClass: JwtAccessAuthGuard,

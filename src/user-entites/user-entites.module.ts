@@ -7,18 +7,11 @@ import { MerchantController } from './merchant/merchant.controller';
 import { MerchantService } from './merchant/merchant.service';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 import { UploaderModule } from 'src/uploader/uploader.module';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from './user/user.service';
 
 @Module({
   imports: [NestjsFormDataModule, UploaderModule],
-  providers: [
-    PrismaService,
-    MerchantService,
-    AdminService,
-    CustomerService,
-    UserService,
-  ],
+  providers: [MerchantService, AdminService, CustomerService, UserService],
   controllers: [MerchantController, AdminController, CustomerController],
   exports: [MerchantService, AdminService, CustomerService, UserService],
 })
