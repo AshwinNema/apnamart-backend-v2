@@ -1,24 +1,29 @@
 import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { create } from 'domain';
-import { FeatureOptionValidation, FeatureValidation } from 'src/validations';
+import {
+  SubCatFltrOptionValidation,
+  SubCatFltrBodyValidation,
+} from 'src/validations';
 
-export const featureCreateTransformer = (featureData: FeatureValidation) => {
-  if (!featureData?.options?.length) {
-    return featureData;
+export const createFilterTransformer = (
+  filterData: SubCatFltrBodyValidation,
+) => {
+  if (!filterData?.options?.length) {
+    return filterData;
   }
 
-  featureData.options = featureData.options.map(
-    (option: FeatureOptionValidation) => {
-      return plainToClass(FeatureOptionValidation, option);
+  filterData.options = filterData.options.map(
+    (option: SubCatFltrOptionValidation) => {
+      return plainToClass(SubCatFltrOptionValidation, option);
     },
   );
 
-  return featureData;
+  return filterData;
 };
 
 @Injectable()
-export class CrtFeatureBodyTransformer implements PipeTransform {
+export class FilterBodyTransformer implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata) {
     if (metadata.type !== 'custom') {
       return value;

@@ -6,27 +6,27 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { FeatureOptionService } from './feature-option.service';
+import { SubCatFltrOptService } from './filter-option.service';
 import { Roles } from 'src/auth/role/role.guard';
 import { UserRole } from '@prisma/client';
 import {
-  FeatureOptionCrtValidation,
-  FeatureOptionValidation,
+  FilterOptionCreateValidation,
+  SubCatFltrOptionValidation,
 } from 'src/validations';
 import { User } from 'src/decorators';
 import { UserInterface } from 'src/interfaces';
 
-@Controller('feature-option')
-export class FeatureOptionController {
-  constructor(private featureOptionService: FeatureOptionService) {}
+@Controller('filter-option')
+export class SubCatFltrOptionController {
+  constructor(private subCatOptService: SubCatFltrOptService) {}
 
   @Post()
   @Roles(UserRole.admin)
-  createFeatureOption(
-    @Body() body: FeatureOptionCrtValidation,
+  createFilterOption(
+    @Body() body: FilterOptionCreateValidation,
     @User() user: UserInterface,
   ) {
-    return this.featureOptionService.createFeatureOption({
+    return this.subCatOptService.createSubCatFltrOption({
       createdBy: user.id,
       ...body,
     });
@@ -34,10 +34,10 @@ export class FeatureOptionController {
 
   @Put(':id')
   @Roles(UserRole.admin)
-  updateFeatureOption(
+  updateFilterOption(
     @Param('id', ParseIntPipe) id: number,
-    @Body() body: FeatureOptionValidation,
+    @Body() body: SubCatFltrOptionValidation,
   ) {
-    return this.featureOptionService.update({ id }, body);
+    return this.subCatOptService.update({ id }, body);
   }
 }
