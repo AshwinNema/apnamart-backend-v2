@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import prisma from 'src/prisma/client';
 
-
 @Injectable()
 export class SubCatFltrService {
   constructor() {}

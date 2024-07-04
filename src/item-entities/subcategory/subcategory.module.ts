@@ -10,11 +10,7 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
 
 @Module({
   imports: [UploaderModule, NestjsFormDataModule],
-  providers: [
-    SubcategoryService,
-    SubCatFltrService,
-    SubCatFltrOptService,
-  ],
+  providers: [SubcategoryService, SubCatFltrService, SubCatFltrOptService],
   controllers: [
     SubcategoryController,
     SubCatFltrController,
