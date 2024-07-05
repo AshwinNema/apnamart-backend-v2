@@ -1,24 +1,24 @@
 import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import {
-  FeatureSubCatValidation,
-  FeatureOptionValidation,
+  SubcatFltrValidation,
+  SubCatFltrOptionValidation,
 } from 'src/validations';
-import { SubCategoryValidatior } from 'src/validations/subcategory.validation';
+import { SubCategoryValidator } from 'src/validations/subcategory.validation';
 
 export const subCategoryCreateProcessor = (
-  subCategoryData: SubCategoryValidatior,
+  subCategoryData: SubCategoryValidator,
 ) => {
-  if (!subCategoryData?.features) {
+  if (!subCategoryData?.filters) {
     return subCategoryData;
   }
-  subCategoryData.features = subCategoryData.features.map(
-    (feature: FeatureSubCatValidation) => {
-      feature.options =
-        feature?.options?.map?.((featureOption: FeatureOptionValidation) => {
-          return plainToClass(FeatureOptionValidation, featureOption);
+  subCategoryData.filters = subCategoryData.filters.map(
+    (filter: SubcatFltrValidation) => {
+      filter.options =
+        filter?.options?.map?.((featureOption: SubCatFltrOptionValidation) => {
+          return plainToClass(SubCatFltrOptionValidation, featureOption);
         }) || [];
-      return plainToClass(FeatureSubCatValidation, feature);
+      return plainToClass(SubcatFltrValidation, filter);
     },
   );
   return subCategoryData;
@@ -33,19 +33,19 @@ export class SubCatCrtDataPipe implements PipeTransform {
     const { user, body } = value;
     body.data = JSON?.parse?.(body.data);
     body.data.createdBy = user.id;
-    if (body?.data?.features) {
-      body.data.features = {
-        create: body.data.features.map((feature) => {
-          if (feature?.options?.length) {
-            feature.options = {
-              create: feature.options.map((option) => {
+    if (body?.data?.filters) {
+      body.data.filters = {
+        create: body.data.filters.map((filter) => {
+          if (filter?.options?.length) {
+            filter.options = {
+              create: filter.options.map((option) => {
                 option.createdBy = user.id;
                 return option;
               }),
             };
           }
-          feature.createdBy = user.id;
-          return feature;
+          filter.createdBy = user.id;
+          return filter;
         }),
       };
     }

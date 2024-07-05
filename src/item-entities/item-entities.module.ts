@@ -3,26 +3,22 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
 import { CategoryController } from 'src/item-entities/category/category.controller';
 import { UploaderModule } from 'src/uploader/uploader.module';
 import { CategoryService } from './category/category.service';
-import { SubcategoryService } from './subcategory/subcategory.service';
-import { SubcategoryController } from './subcategory/subcategory.controller';
-import { FeatureController } from './feature/feature.controller';
-import { FeatureService } from './feature/feature.service';
-import { FeatureOptionService } from './feature-option/feature-option.service';
-import { FeatureOptionController } from './feature-option/feature-option.controller';
+import { SubcategoryModule } from './subcategory/subcategory.module';
+import { RouterModule } from '@nestjs/core';
 
 @Module({
-  imports: [NestjsFormDataModule, UploaderModule],
-  providers: [
-    CategoryService,
-    SubcategoryService,
-    FeatureService,
-    FeatureOptionService,
+  imports: [
+    NestjsFormDataModule,
+    UploaderModule,
+    SubcategoryModule,
+    RouterModule.register([
+      {
+        path: 'subcategory',
+        module: SubcategoryModule,
+      },
+    ]),
   ],
-  controllers: [
-    CategoryController,
-    SubcategoryController,
-    FeatureController,
-    FeatureOptionController,
-  ],
+  providers: [CategoryService],
+  controllers: [CategoryController],
 })
 export class ItemEntitiesModule {}

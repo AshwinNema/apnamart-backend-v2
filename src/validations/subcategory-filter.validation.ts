@@ -8,13 +8,13 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-export class FeatureOptionValidation {
+export class SubCatFltrOptionValidation {
   @IsNotEmpty()
   @IsString()
   name: string;
 }
 
-export class FeatureOptionCrtValidation {
+export class FilterOptionCreateValidation {
   @IsInt()
   featureId: number;
 
@@ -23,7 +23,7 @@ export class FeatureOptionCrtValidation {
   name: string;
 }
 
-export class FeatureValidation {
+export class SubCatFltrBodyValidation {
   @IsNotEmpty()
   @IsString()
   name: string;
@@ -35,10 +35,10 @@ export class FeatureValidation {
   @ArrayMinSize(1)
   @ValidateNested()
   @ArrayUnique((o) => o.name)
-  options: FeatureOptionValidation[];
+  options: SubCatFltrOptionValidation[];
 }
 
-export class FeatureSubCatValidation {
+export class SubcatFltrValidation {
   @IsNotEmpty()
   @IsString()
   name: string;
@@ -46,7 +46,7 @@ export class FeatureSubCatValidation {
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested()
-  options: FeatureOptionValidation[];
+  options: SubCatFltrOptionValidation[];
 }
 
 export class FeatureUpdateValidation {
