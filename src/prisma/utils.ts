@@ -1,0 +1,33 @@
+import { Prisma } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
+
+export const getPrismaOptions = () => {
+  const options: Prisma.PrismaClientOptions = {};
+  if (process.env.ENABLE_PRISMA_LOGGING) {
+    options.log = ['query', 'info', 'warn', 'error'];
+  }
+  return options;
+};
+
+export async function passwordModification({ args, query }) {
+  if (args.data.password) {
+    args.data.password = await bcrypt.hash(args.data.password, 8);
+  }
+  args.omit = {
+    password: true,
+  };
+  return query(args);
+}
+
+export function archiveHook({ args, query }) {
+  args.where = { archive: false, ...args.where };
+  return query(args);
+}
+
+export function omitUserPassword({ query, args }) {
+  args.omit = {
+    password: true,
+    ...args.omit,
+  };
+  return query(args);
+}

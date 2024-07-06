@@ -32,6 +32,8 @@ export class RegisterAdminValidator {
 }
 
 export class registerUser extends RegisterAdminValidator {
+  @IsString()
+  @IsNotEmpty()
   role: NonAdminRoles;
 }
 
