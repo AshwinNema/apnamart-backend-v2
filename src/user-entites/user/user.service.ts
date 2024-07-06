@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserInterface } from 'src/interfaces';
 import prisma from 'src/prisma/client';
-import { excludeUserFields } from 'src/utils';
 
 @Injectable()
 export class UserService {
@@ -12,20 +11,16 @@ export class UserService {
       data,
     });
 
-    return excludeUserFields(newUser);
+    return newUser;
   }
 
-  async findUnique(
-    filter,
-    omitPassword: boolean = true,
-  ): Promise<UserInterface | UserInterface[]> {
+  async findUnique(filter, options = {}): Promise<UserInterface> {
     const user = await prisma.user.findUnique({
       where: filter,
+      ...options,
     });
-    if (!omitPassword) {
-      return user;
-    }
-    return excludeUserFields(user);
+
+    return user;
   }
 
   async updateUser(where, data) {
@@ -33,6 +28,6 @@ export class UserService {
       where,
       data,
     });
-    return excludeUserFields(updatedUser);
+    return updatedUser;
   }
 }

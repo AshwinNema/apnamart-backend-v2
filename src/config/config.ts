@@ -28,6 +28,7 @@ const envVarsSchema = z.object({
   CLOUDINARY_CLOUD_NAME: z.string(),
   CLOUDINARY_API_KEY: z.string(),
   CLOUDINARY_API_SECRET: z.string(),
+  ENABLE_PRISMA_LOGGING: z.coerce.boolean().default(false),
 });
 
 export const validateConfig = (config: config) => {
@@ -46,6 +47,9 @@ export const validateConfig = (config: config) => {
       cloud_name: configuration.CLOUDINARY_CLOUD_NAME,
       api_key: configuration.CLOUDINARY_API_KEY,
       api_secret: configuration.CLOUDINARY_API_SECRET,
+    },
+    prisma: {
+      enable_logging: configuration.ENABLE_PRISMA_LOGGING,
     },
   };
 };

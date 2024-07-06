@@ -8,22 +8,6 @@ export const getTokenExpiration = (expirationSec: number): Date => {
   return expirationDate;
 };
 
-export const excludeUserFields = (
-  data: User[] | User,
-): UserInterface | UserInterface[] => {
-  if (!data) {
-    return data;
-  }
-  if (Array.isArray(data)) {
-    return data.map((user: User) => {
-      delete user.password;
-      return user;
-    });
-  }
-  delete data.password;
-  return data;
-};
-
 export const passwordValidation = {
   regex: /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8}$/,
   message:

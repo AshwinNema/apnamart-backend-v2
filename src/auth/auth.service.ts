@@ -12,7 +12,7 @@ import {
 import { TokenService } from 'src/auth/token/token.service';
 import { AdminService } from 'src/user-entites/admin/admin.service';
 import { UserService } from 'src/user-entites/user/user.service';
-import { excludeUserFields } from 'src/utils';
+
 import { UserRole } from '@prisma/client';
 import prisma from 'src/prisma/client';
 
@@ -40,12 +40,16 @@ export class AuthService {
   async login(loginCredentails: LoginValidator) {
     const user = await this.userService.findUnique(
       { email: loginCredentails.email },
-      false,
+      {
+        omit: { password: false },
+      },
     );
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    const { id: userId, password } = Array.isArray(user) ? user[0] : user;
+    const { id: userId, password } = user;
+    delete user.password;
+
     const isPasswordMatch = await prisma.user.isPasswordMatch(
       loginCredentails.password,
       password,
@@ -56,8 +60,9 @@ export class AuthService {
     }
 
     const tokens = await this.tokenService.generateAuthTokens(userId);
+
     return {
-      user: { ...excludeUserFields(user), role: loginCredentails.role },
+      user: { ...user, role: loginCredentails.role },
       tokens,
     };
   }
@@ -66,12 +71,12 @@ export class AuthService {
     const user = await this.userService.findUnique({
       email: userDetails.email,
     });
-    const userData = Array.isArray(user) ? user[0] : user;
+
     const userRoles = [userDetails.role];
     delete userDetails.role;
     let registeredUser;
-    if (userData) {
-      if (userData.userRoles.includes(userRoles[0])) {
+    if (user) {
+      if (user.userRoles.includes(userRoles[0])) {
         throw new BadRequestException('User already has the given role');
       } else {
         registeredUser = await this.userService.updateUser(
