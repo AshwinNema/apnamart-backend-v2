@@ -19,8 +19,12 @@ export async function passwordModification({ args, query }) {
   return query(args);
 }
 
-export function archiveHook({ args, query }) {
+export function commonHook({ args, query }) {
   args.where = { archive: false, ...args.where };
+  args.omit = {
+    createdAt: true,
+    updatedAt: true,
+  };
   return query(args);
 }
 
