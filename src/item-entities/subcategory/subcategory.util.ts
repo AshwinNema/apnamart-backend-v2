@@ -1,5 +1,12 @@
-import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
+import {
+  ArgumentMetadata,
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  PipeTransform,
+} from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
+import prisma from 'src/prisma/client';
 import {
   SubcatFltrValidation,
   SubCatFltrOptionValidation,
@@ -15,8 +22,8 @@ export const subCategoryCreateProcessor = (
   subCategoryData.filters = subCategoryData.filters.map(
     (filter: SubcatFltrValidation) => {
       filter.options =
-        filter?.options?.map?.((featureOption: SubCatFltrOptionValidation) => {
-          return plainToClass(SubCatFltrOptionValidation, featureOption);
+        filter?.options?.map?.((filterOption: SubCatFltrOptionValidation) => {
+          return plainToClass(SubCatFltrOptionValidation, filterOption);
         }) || [];
       return plainToClass(SubcatFltrValidation, filter);
     },
@@ -24,14 +31,34 @@ export const subCategoryCreateProcessor = (
   return subCategoryData;
 };
 
+const validatePipeData = async (data: SubCategoryValidator) => {
+  const categoryData = await prisma.category.findUnique({
+    where: { id: data.categoryId },
+  });
+  if (!categoryData) {
+    throw new NotFoundException('Category not found');
+  }
+
+  if (
+    await prisma.subCategory.findFirst({
+      where: { name: data.name, categoryId: data.categoryId },
+    })
+  ) {
+    throw new BadRequestException(
+      'Sub category with the given name already present for category',
+    );
+  }
+};
+
 @Injectable()
 export class SubCatCrtDataPipe implements PipeTransform {
-  transform(value: any, metadata: ArgumentMetadata) {
+  async transform(value: any, metadata: ArgumentMetadata) {
     if (metadata.type !== 'custom') {
       return value;
     }
     const { user, body } = value;
     body.data = JSON?.parse?.(body.data);
+    await validatePipeData(body.data);
     body.data.createdBy = user.id;
     if (body?.data?.filters) {
       body.data.filters = {

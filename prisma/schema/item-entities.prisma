@@ -47,12 +47,14 @@ model SubCategoryFilter {
 model SubCategoryFilterOption {
   id        Int               @id @default(autoincrement())
   name      String
-  feature   SubCategoryFilter @relation(fields: [featureId], references: [id])
-  featureId Int
+  filter    SubCategoryFilter @relation(fields: [filterId], references: [id])
+  filterId  Int
   product   Product[]
   user      User              @relation(fields: [createdBy], references: [id])
   createdBy Int
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
   archive   Boolean           @default(false)
+
+  @@unique([filterId, name])
 }

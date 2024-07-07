@@ -14,6 +14,12 @@ export const passwordValidation = {
     'password should contain 1 capital letter, 1 number and should have a length of atleast 8 characters',
 };
 
+export const mimeTypes = {
+  image: 'image/*',
+  video: 'video/*',
+  imageOrVideo: ['image/*', 'video/*'],
+};
+
 export type NonAdminRoles = Exclude<UserRole, 'admin'>;
 
 export const processNestedValidationError = (errors: ValidationError[]) => {
