@@ -3,7 +3,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryResponse } from '../../utils/types';
 import prisma from 'src/prisma/client';
 
-const streamifier = require('streamifier');
+import streamifier from 'streamifier';
 
 @Injectable()
 export class CloudinaryService {

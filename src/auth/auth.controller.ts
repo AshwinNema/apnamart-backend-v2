@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SkipAccessAuth } from './jwt/access.jwt';
 import {
@@ -44,6 +44,7 @@ export class AuthController {
       tokenDetails.token,
       TokenTypes.refresh,
       this.configService.get('jwt').refresh_secret,
+      new UnauthorizedException('Forbidden'),
     );
     this.tokenService2.deleteOneToken({ id: token.id });
     return this.tokenService.generateAuthTokens(token.userId);
