@@ -10,6 +10,7 @@ import { envConfig } from 'src/config/config';
 import { TokenService2 } from 'src/auth/token/token2.service';
 import { RolesGuard } from './role/role.guard';
 import { UserEntitesModule } from 'src/user-entites/user-entites.module';
+import { GoogleAuthService } from './google-auth/google-auth.service';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { UserEntitesModule } from 'src/user-entites/user-entites.module';
       useClass: RolesGuard,
     },
     TokenService,
+    GoogleAuthService,
   ],
   controllers: [AuthController],
 })

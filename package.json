@@ -34,6 +34,7 @@
     "class-validator": "^0.14.1",
     "cloudinary": "^2.2.0",
     "compression": "^1.7.4",
+    "googleapis": "^140.0.1",
     "helmet": "^7.1.0",
     "lodash": "^4.17.21",
     "nestjs-form-data": "^1.9.91",
