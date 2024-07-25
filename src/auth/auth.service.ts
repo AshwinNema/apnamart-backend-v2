@@ -48,6 +48,11 @@ export class AuthService {
       throw new NotFoundException('User not found');
     }
     const { id: userId, password } = user;
+    if (!password) {
+      throw new BadRequestException(
+        'You have not setted your password yet. Please login through twitter/google and set your password first',
+      );
+    }
     delete user.password;
 
     const isPasswordMatch = await prisma.user.isPasswordMatch(
@@ -101,7 +106,7 @@ export class AuthService {
     const tokens = await this.tokenService.generateAuthTokens(registeredUserId);
 
     return {
-      user: registeredUser,
+      user: { ...registeredUser, role: registeredUser.userRoles[0] },
       tokens,
     };
   }

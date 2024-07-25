@@ -21,6 +21,11 @@ export const mimeTypes = {
 
 export type NonAdminRoles = Exclude<UserRole, 'admin'>;
 
+export enum NonAdminRoleEnum {
+  merchant = 'merchant',
+  customer = 'customer',
+}
+
 export const processNestedValidationError = (errors: ValidationError[]) => {
   return errors
     .map((error: ValidationError) => {

@@ -6,12 +6,14 @@ import {
   LoginValidator,
   registerUser,
   RefreshTokenValidator,
+  GoogleAuth,
 } from 'src/validations/auth.validation';
 import { TokenService } from 'src/auth/token/token.service';
 
 import { ConfigService } from '@nestjs/config';
 import { TokenTypes } from '@prisma/client';
 import { TokenService2 } from 'src/auth/token/token2.service';
+import { GoogleAuthService } from './google-auth/google-auth.service';
 
 @SkipAccessAuth()
 @Controller('auth')
@@ -21,6 +23,7 @@ export class AuthController {
     private tokenService: TokenService,
     private configService: ConfigService,
     private tokenService2: TokenService2,
+    private GoogleAuthService: GoogleAuthService,
   ) {}
 
   @Post('register-admin')
@@ -48,5 +51,10 @@ export class AuthController {
     );
     this.tokenService2.deleteOneToken({ id: token.id });
     return this.tokenService.generateAuthTokens(token.userId);
+  }
+
+  @Post('google')
+  async googleAuth(@Body() loginCredentails: GoogleAuth) {
+    return this.GoogleAuthService.googleLoginSignUp(loginCredentails);
   }
 }

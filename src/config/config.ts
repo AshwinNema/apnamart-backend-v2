@@ -8,10 +8,18 @@ export enum environments {
 interface config {
   NODE_ENV: environments;
   PORT: number;
+  DATABASE_URL: string;
   JWT_ACCESS_EXPIRATION: number;
   JWT_REFRESH_EXPIRATION: number;
   JWT_ACCESS_SECRET: string;
   JWT_REFRESH_SECRET: string;
+  CLOUDINARY_CLOUD_NAME: string;
+  CLOUDINARY_API_KEY: string;
+  CLOUDINARY_API_SECRET: string;
+  ENABLE_PRISMA_LOGGING: string;
+  GOOGLE_CLIENT_ID: string;
+  GOOGLE_CLIENT_SECRET: string;
+  GOOGLE_REDIRECT_URL: string;
 }
 const envVarsSchema = z.object({
   NODE_ENV: z.enum([
@@ -29,6 +37,9 @@ const envVarsSchema = z.object({
   CLOUDINARY_API_KEY: z.string(),
   CLOUDINARY_API_SECRET: z.string(),
   ENABLE_PRISMA_LOGGING: z.coerce.boolean().default(false),
+  GOOGLE_CLIENT_ID: z.string(),
+  GOOGLE_CLIENT_SECRET: z.string(),
+  GOOGLE_REDIRECT_URL: z.string(),
 });
 
 export const validateConfig = (config: config) => {
@@ -50,6 +61,11 @@ export const validateConfig = (config: config) => {
     },
     prisma: {
       enable_logging: configuration.ENABLE_PRISMA_LOGGING,
+    },
+    google: {
+      clientId: configuration.GOOGLE_CLIENT_ID,
+      clientSecret: configuration.GOOGLE_CLIENT_SECRET,
+      redirectUrl: configuration.GOOGLE_REDIRECT_URL,
     },
   };
 };
