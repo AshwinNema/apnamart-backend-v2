@@ -20,7 +20,11 @@ interface config {
   GOOGLE_CLIENT_ID: string;
   GOOGLE_CLIENT_SECRET: string;
   GOOGLE_REDIRECT_URL: string;
+  TWITTER_CONSUMER_KEY: string;
+  TWITTER_CONSUMER_SECRET: string;
+  TWITTER_OAUTH_CALLBACK: string;
 }
+
 const envVarsSchema = z.object({
   NODE_ENV: z.enum([
     environments.production,
@@ -40,6 +44,9 @@ const envVarsSchema = z.object({
   GOOGLE_CLIENT_ID: z.string(),
   GOOGLE_CLIENT_SECRET: z.string(),
   GOOGLE_REDIRECT_URL: z.string(),
+  TWITTER_CONSUMER_KEY: z.string(),
+  TWITTER_CONSUMER_SECRET: z.string(),
+  TWITTER_OAUTH_CALLBACK: z.string(),
 });
 
 export const validateConfig = (config: config) => {
@@ -66,6 +73,11 @@ export const validateConfig = (config: config) => {
       clientId: configuration.GOOGLE_CLIENT_ID,
       clientSecret: configuration.GOOGLE_CLIENT_SECRET,
       redirectUrl: configuration.GOOGLE_REDIRECT_URL,
+    },
+    twitter: {
+      consumer_key: configuration.TWITTER_CONSUMER_KEY,
+      consumer_secret: configuration.TWITTER_CONSUMER_SECRET,
+      oauth_callback: configuration.TWITTER_OAUTH_CALLBACK,
     },
   };
 };

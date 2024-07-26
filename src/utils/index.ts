@@ -26,6 +26,10 @@ export enum NonAdminRoleEnum {
   customer = 'customer',
 }
 
+export enum OtherTokenTypes {
+  twitter = 'twitter',
+}
+
 export const processNestedValidationError = (errors: ValidationError[]) => {
   return errors
     .map((error: ValidationError) => {

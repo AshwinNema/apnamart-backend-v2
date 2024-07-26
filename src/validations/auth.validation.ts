@@ -61,3 +61,16 @@ export class GoogleAuth {
   @IsString()
   token: string;
 }
+
+export class TwitterAccessToken {
+  @IsString()
+  oauth_token: string;
+
+  @IsString()
+  oauth_verifier: string;
+
+  @IsEnum(UserRole)
+  @IsString()
+  @IsNotEmpty()
+  role: UserRole;
+}
