@@ -29,8 +29,11 @@ export class TokenService2 {
     { role, name, email }: { role: UserRole; name: string; email: string },
   ) {
     let isNewUser = false;
+    let noInitialPassword = false;
+
     if (!user) {
       isNewUser = true;
+      noInitialPassword = true;
       user = (await this.userService.createUser({
         name,
         email,
@@ -39,6 +42,7 @@ export class TokenService2 {
     }
 
     if (!user.userRoles.includes(role)) {
+      isNewUser = true;
       this.userService.updateUser(
         { id: user.id },
         {
@@ -55,6 +59,7 @@ export class TokenService2 {
       user: { ...user, role },
       tokens,
       isNewUser,
+      noInitialPassword,
     };
   }
 }
