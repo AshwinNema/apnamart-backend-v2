@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { UserService } from 'src/user-entites/user/user.service';
 import { UserRole } from '@prisma/client';
 import { UserInterface } from 'src/interfaces';
+import { TokenService2 } from '../token/token2.service';
 
 // checks in the function -
 // 1. If user is not present in the system and user role is admin, then we throw an error because admin creation is not allowed
@@ -13,7 +14,7 @@ import { UserInterface } from 'src/interfaces';
 @Injectable()
 export class GoogleAuthService {
   constructor(
-    private tokenService: TokenService,
+    private tokenService: TokenService2,
     private configService: ConfigService,
     private userService: UserService,
   ) {}
@@ -53,29 +54,10 @@ export class GoogleAuthService {
       throw new BadRequestException('Existing user cannot be made an admin');
     }
 
-    if (!user) {
-      user = (await this.userService.createUser({
-        name: userName,
-        email,
-        userRoles: [role],
-      })) as UserInterface;
-    }
-
-    if (!user.userRoles.includes(role)) {
-      this.userService.updateUser(
-        { id: user.id },
-        {
-          UserRoles: {
-            push: role,
-          },
-        },
-      );
-    }
-
-    const tokens = await this.tokenService.generateAuthTokens(user.id);
-    return {
-      user: { ...user, role },
-      tokens,
-    };
+    return this.tokenService.generateDifferentLoginToken(user, {
+      role,
+      name: userName,
+      email,
+    });
   }
 }
