@@ -1,14 +1,17 @@
 import { AddressType, UserRole } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
+  IsEmail,
   IsEnum,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
+  Matches,
   ValidateIf,
 } from 'class-validator';
 import { HasMimeType, IsFile, MaxFileSize } from 'nestjs-form-data';
-import { mimeTypes } from 'src/utils';
+import { mimeTypes, passwordValidation } from 'src/utils';
 
 export class ProfilePhotoValidation {
   @IsFile()
@@ -65,4 +68,23 @@ export class UpdateUserAddress {
   @IsNotEmpty()
   @IsString()
   otherAddress: string;
+}
+
+export class UpdateUserProfile {
+  @IsEmail()
+  @IsOptional()
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  name: string;
+
+  @Matches(passwordValidation.regex, {
+    message: passwordValidation.message,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  password: string;
 }

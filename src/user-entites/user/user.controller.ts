@@ -6,6 +6,7 @@ import {
   ProfilePhotoValidation,
   QueryLocations,
   UpdateUserAddress,
+  UpdateUserProfile,
 } from 'src/validations';
 import { User } from 'src/decorators';
 import { UserAddressService } from './user-address.service';
@@ -25,7 +26,12 @@ export class UserController {
 
   @Get('profile')
   getProfile(@User() user) {
-    return user;
+    return this.userService.getUserProfile(user.id);
+  }
+
+  @Put('profile')
+  updateProfile(@User() user, @Body() body: UpdateUserProfile) {
+    return this.userService.updateUser({ id: user.id }, body);
   }
 
   @Get('query-location')

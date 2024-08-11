@@ -47,4 +47,15 @@ export class UserService {
 
     return this.cloudinaryService.updatePrismaEntityFile('user', user.id, file);
   }
+
+  async getUserProfile(id: number) {
+    return this.findUnique(
+      { id },
+      {
+        include: {
+          address: true,
+        },
+      },
+    );
+  }
 }
