@@ -58,7 +58,7 @@ export class TwitterAccessAuthGuard extends AuthGuard(OtherTokenTypes.twitter) {
     profile: any,
     info: any,
     context: ExecutionContext,
-    status?: any,
+    // status?: any,
   ): TUser {
     if (err || !profile) {
       throw err || new UnauthorizedException();

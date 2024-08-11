@@ -1,5 +1,4 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { TokenService } from '../token/token.service';
 import { google } from 'googleapis';
 import { GoogleAuth } from 'src/validations';
 import { ConfigService } from '@nestjs/config';
@@ -38,7 +37,7 @@ export class GoogleAuthService {
     const profileData = profileDetails?.data;
     const email = profileData?.emailAddresses?.[0]?.value;
     const userName = profileData?.names?.[0]?.displayName || 'New User';
-    let user: UserInterface = await this.userService.findUnique({ email });
+    const user: UserInterface = await this.userService.findUnique({ email });
 
     // Check as per point 1.
     if (!user && role === UserRole.admin) {

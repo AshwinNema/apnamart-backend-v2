@@ -3,7 +3,9 @@ import * as bcrypt from 'bcrypt';
 
 export const getPrismaOptions = () => {
   const options: Prisma.PrismaClientOptions = {};
-  if (process.env.ENABLE_PRISMA_LOGGING) {
+  const enableLogging = process.env.ENABLE_PRISMA_LOGGING === 'true';
+
+  if (enableLogging) {
     options.log = ['query', 'info', 'warn', 'error'];
   }
   return options;
