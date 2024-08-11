@@ -23,6 +23,7 @@ interface config {
   TWITTER_CONSUMER_KEY: string;
   TWITTER_CONSUMER_SECRET: string;
   TWITTER_OAUTH_CALLBACK: string;
+  OLA_MAPS_API_KEY: string;
 }
 
 const envVarsSchema = z.object({
@@ -47,6 +48,7 @@ const envVarsSchema = z.object({
   TWITTER_CONSUMER_KEY: z.string(),
   TWITTER_CONSUMER_SECRET: z.string(),
   TWITTER_OAUTH_CALLBACK: z.string(),
+  OLA_MAPS_API_KEY: z.string(),
 });
 
 export const validateConfig = (config: config) => {
@@ -78,6 +80,9 @@ export const validateConfig = (config: config) => {
       consumer_key: configuration.TWITTER_CONSUMER_KEY,
       consumer_secret: configuration.TWITTER_CONSUMER_SECRET,
       oauth_callback: configuration.TWITTER_OAUTH_CALLBACK,
+    },
+    ola_maps: {
+      api_key: configuration.OLA_MAPS_API_KEY,
     },
   };
 };

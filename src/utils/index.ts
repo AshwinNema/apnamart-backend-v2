@@ -1,4 +1,5 @@
 import { UserRole } from '@prisma/client';
+import { AxiosRequestConfig } from 'axios';
 import { ValidationError } from 'class-validator';
 
 export const getTokenExpiration = (expirationSec: number): Date => {
@@ -18,6 +19,16 @@ export const mimeTypes = {
   video: 'video/*',
   imageOrVideo: ['image/*', 'video/*'],
 };
+
+export enum axiosMethods {
+  get = 'GET',
+  put = 'PUT',
+  post = 'POST',
+  delete = 'DELETE',
+}
+export interface params {
+  [key: string]: number | string | boolean;
+}
 
 export type NonAdminRoles = Exclude<UserRole, 'admin'>;
 
@@ -42,4 +53,28 @@ export const processNestedValidationError = (errors: ValidationError[]) => {
       return '';
     })
     .join(', ');
+};
+
+export const makeAxiosConfig = (
+  method: axiosMethods,
+  url: string,
+  params?: params,
+  data?: object,
+  headers: object = {},
+): AxiosRequestConfig => {
+  if (params) {
+    const query = Object.keys(params)
+      .map(
+        (k: string) =>
+          encodeURIComponent(k) + '=' + encodeURIComponent(params[k]),
+      )
+      .join('&');
+    url += `?${query}`;
+  }
+  const config: AxiosRequestConfig = { method, url, headers };
+  if (data) {
+    config.data = data;
+  }
+
+  return config;
 };
