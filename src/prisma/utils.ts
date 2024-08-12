@@ -26,6 +26,7 @@ export function commonHook({ args, query }) {
   args.omit = {
     createdAt: true,
     updatedAt: true,
+    ...args.omit
   };
   return query(args);
 }
