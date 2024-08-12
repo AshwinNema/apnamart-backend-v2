@@ -1,9 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryResponse } from '../../utils/types';
 import prisma from 'src/prisma/client';
-
-const streamifier = require('streamifier');
+import * as streamifier from 'streamifier';
 
 @Injectable()
 export class CloudinaryService {
@@ -27,9 +26,14 @@ export class CloudinaryService {
   }
 
   async deletePrismaEntityFile(entity: string, id: number) {
-    const entityData = await prisma[entity].findUniqueOrThrow({
+    const entityData = await prisma[entity].findUnique({
       where: { id },
     });
+    if (!entityData) {
+      throw new NotFoundException(
+        'Data for the given prisma prisma entity not found',
+      );
+    }
     const { cloudinary_public_id } = entityData;
     return this.deleteFile(cloudinary_public_id);
   }
@@ -38,14 +42,22 @@ export class CloudinaryService {
     entity: string,
     id: number,
     file: Express.Multer.File,
+    photoKey = 'photo',
   ) {
     const uploadedFile: CloudinaryResponse = await this.uploadFile(file);
+
     return prisma[entity].update({
       where: { id },
       data: {
-        photo: uploadedFile.secure_url,
+        [photoKey]: uploadedFile.secure_url,
         cloudinary_public_id: uploadedFile.public_id,
       },
     });
+  }
+
+  async uploadFiles(
+    files: Express.Multer.File[],
+  ): Promise<Promise<CloudinaryResponse>[]> {
+    return files.map((file: Express.Multer.File) => this.uploadFile(file));
   }
 }

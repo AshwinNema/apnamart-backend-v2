@@ -3,7 +3,9 @@ import * as bcrypt from 'bcrypt';
 
 export const getPrismaOptions = () => {
   const options: Prisma.PrismaClientOptions = {};
-  if (process.env.ENABLE_PRISMA_LOGGING) {
+  const enableLogging = process.env.ENABLE_PRISMA_LOGGING === 'true';
+
+  if (enableLogging) {
     options.log = ['query', 'info', 'warn', 'error'];
   }
   return options;
@@ -19,8 +21,12 @@ export async function passwordModification({ args, query }) {
   return query(args);
 }
 
-export function archiveHook({ args, query }) {
+export function commonHook({ args, query }) {
   args.where = { archive: false, ...args.where };
+  args.omit = {
+    createdAt: true,
+    updatedAt: true,
+  };
   return query(args);
 }
 

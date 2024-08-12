@@ -5,6 +5,8 @@ import { UploaderModule } from 'src/uploader/uploader.module';
 import { CategoryService } from './category/category.service';
 import { SubcategoryModule } from './subcategory/subcategory.module';
 import { RouterModule } from '@nestjs/core';
+import { ProductController } from './product/product.controller';
+import { ProductService } from './product/product.service';
 
 @Module({
   imports: [
@@ -18,7 +20,7 @@ import { RouterModule } from '@nestjs/core';
       },
     ]),
   ],
-  providers: [CategoryService],
-  controllers: [CategoryController],
+  providers: [CategoryService, ProductService],
+  controllers: [CategoryController, ProductController],
 })
 export class ItemEntitiesModule {}

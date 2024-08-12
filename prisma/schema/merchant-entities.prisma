@@ -8,21 +8,40 @@ model MerchantDetails {
   archive           Boolean  @default(false)
 }
 
+model ProductPhoto {
+  id                   Int      @id @default(autoincrement())
+  url                  String
+  cloudinary_public_id String
+  photos               Product? @relation("Photos", fields: [photoId], references: [id])
+  photoId              Int?
+  thumbnail            Product? @relation("Thumbnail", fields: [thumbnailId], references: [id])
+  thumbnailId          Int?     @unique
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  archive              Boolean  @default(false)
+}
+
 model Product {
-  id            Int                       @id @default(autoincrement())
-  name          String
-  price         Float
-  photos        String[]
-  thumbNail     String
-  description   String
-  rating        Float
-  subCategory   SubCategory               @relation(fields: [subCategoryId], references: [id])
-  subCategoryId Int
-  filterOptions SubCategoryFilterOption[]
-  User          User                      @relation(fields: [merchant], references: [id])
-  merchant      Int
-  orderItem     OrderItem[]
-  createdAt     DateTime                  @default(now())
-  updatedAt     DateTime                  @updatedAt
-  archive       Boolean                   @default(false)
+  id             Int                       @id @default(autoincrement())
+  name           String
+  price          Float
+  photos         ProductPhoto[]            @relation("Photos")
+  thumbNail      ProductPhoto?             @relation("Thumbnail")
+  description    String
+  rating         Float                     @default(0)
+  totalReviewers Int                       @default(0)
+  totalRatings   Int                       @default(0)
+  quantity       Int                       @default(0)
+  subCategory    SubCategory               @relation(fields: [subCategoryId], references: [id])
+  subCategoryId  Int
+  filterOptions  SubCategoryFilterOption[]
+  user           User                      @relation(fields: [merchant], references: [id])
+  merchant       Int
+  orderItem      OrderItem[]
+  available      Boolean                   @default(true)
+  createdAt      DateTime                  @default(now())
+  updatedAt      DateTime                  @updatedAt
+  archive        Boolean                   @default(false)
+
+  @@unique([subCategoryId, name])
 }

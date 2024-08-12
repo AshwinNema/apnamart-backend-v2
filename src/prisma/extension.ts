@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import { passwordModification, archiveHook, omitUserPassword } from './utils';
+import { passwordModification, commonHook, omitUserPassword } from './utils';
 
 export const prismaExtension = Prisma.defineExtension({
   model: {
@@ -36,19 +36,19 @@ export const prismaExtension = Prisma.defineExtension({
     },
     $allModels: {
       findMany(queryParams) {
-        return archiveHook(queryParams);
+        return commonHook(queryParams);
       },
       findFirst(queryParams) {
-        return archiveHook(queryParams);
+        return commonHook(queryParams);
       },
       findFirstOrThrow(queryParams) {
-        return archiveHook(queryParams);
+        return commonHook(queryParams);
       },
       findUnique(queryParams) {
-        return archiveHook(queryParams);
+        return commonHook(queryParams);
       },
       findUniqueOrThrow(queryParams) {
-        return archiveHook(queryParams);
+        return commonHook(queryParams);
       },
     },
   },
