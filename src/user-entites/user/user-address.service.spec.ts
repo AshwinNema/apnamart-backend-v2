@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SubCatFltrService } from './filter.service';
+import { UserAddressService } from './user-address.service';
 
-describe('SubCatFltrService', () => {
-  let service: SubCatFltrService;
+describe('UserAddressService', () => {
+  let service: UserAddressService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SubCatFltrService],
+      providers: [UserAddressService],
     }).compile();
 
-    service = module.get<SubCatFltrService>(SubCatFltrService);
+    service = module.get<UserAddressService>(UserAddressService);
   });
 
   it('should be defined', () => {

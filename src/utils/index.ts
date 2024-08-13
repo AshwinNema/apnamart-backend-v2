@@ -1,5 +1,5 @@
-import { User, UserRole } from '@prisma/client';
-import { UserInterface } from '../interfaces';
+import { UserRole } from '@prisma/client';
+import { AxiosRequestConfig } from 'axios';
 import { ValidationError } from 'class-validator';
 
 export const getTokenExpiration = (expirationSec: number): Date => {
@@ -8,29 +8,38 @@ export const getTokenExpiration = (expirationSec: number): Date => {
   return expirationDate;
 };
 
-export const excludeUserFields = (
-  data: User[] | User,
-): UserInterface | UserInterface[] => {
-  if (!data) {
-    return data;
-  }
-  if (Array.isArray(data)) {
-    return data.map((user: User) => {
-      delete user.password;
-      return user;
-    });
-  }
-  delete data.password;
-  return data;
-};
-
 export const passwordValidation = {
-  regex: /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8}$/,
+  regex: /(?=.*[A-Z])(?=.*\d).{8,}|(?=.*\d)(?=.*[A-Z]).{8,}/,
   message:
     'password should contain 1 capital letter, 1 number and should have a length of atleast 8 characters',
 };
 
+export const mimeTypes = {
+  image: 'image/*',
+  video: 'video/*',
+  imageOrVideo: ['image/*', 'video/*'],
+};
+
+export enum axiosMethods {
+  get = 'GET',
+  put = 'PUT',
+  post = 'POST',
+  delete = 'DELETE',
+}
+export interface params {
+  [key: string]: number | string | boolean;
+}
+
 export type NonAdminRoles = Exclude<UserRole, 'admin'>;
+
+export enum NonAdminRoleEnum {
+  merchant = 'merchant',
+  customer = 'customer',
+}
+
+export enum OtherTokenTypes {
+  twitter = 'twitter',
+}
 
 export const processNestedValidationError = (errors: ValidationError[]) => {
   return errors
@@ -44,4 +53,28 @@ export const processNestedValidationError = (errors: ValidationError[]) => {
       return '';
     })
     .join(', ');
+};
+
+export const makeAxiosConfig = (
+  method: axiosMethods,
+  url: string,
+  params?: params,
+  data?: object,
+  headers: object = {},
+): AxiosRequestConfig => {
+  if (params) {
+    const query = Object.keys(params)
+      .map(
+        (k: string) =>
+          encodeURIComponent(k) + '=' + encodeURIComponent(params[k]),
+      )
+      .join('&');
+    url += `?${query}`;
+  }
+  const config: AxiosRequestConfig = { method, url, headers };
+  if (data) {
+    config.data = data;
+  }
+
+  return config;
 };

@@ -8,11 +8,24 @@ import { MerchantService } from './merchant/merchant.service';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 import { UploaderModule } from 'src/uploader/uploader.module';
 import { UserService } from './user/user.service';
+import { UserController } from './user/user.controller';
+import { UserAddressService } from './user/user-address.service';
 
 @Module({
   imports: [NestjsFormDataModule, UploaderModule],
-  providers: [MerchantService, AdminService, CustomerService, UserService],
-  controllers: [MerchantController, AdminController, CustomerController],
+  providers: [
+    MerchantService,
+    AdminService,
+    CustomerService,
+    UserService,
+    UserAddressService,
+  ],
+  controllers: [
+    MerchantController,
+    AdminController,
+    CustomerController,
+    UserController,
+  ],
   exports: [MerchantService, AdminService, CustomerService, UserService],
 })
 export class UserEntitesModule {}

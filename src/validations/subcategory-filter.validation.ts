@@ -16,7 +16,7 @@ export class SubCatFltrOptionValidation {
 
 export class FilterOptionCreateValidation {
   @IsInt()
-  featureId: number;
+  filterId: number;
 
   @IsNotEmpty()
   @IsString()
@@ -34,7 +34,7 @@ export class SubCatFltrBodyValidation {
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested()
-  @ArrayUnique((o) => o.name)
+  @ArrayUnique((option) => option.name)
   options: SubCatFltrOptionValidation[];
 }
 
@@ -49,7 +49,7 @@ export class SubcatFltrValidation {
   options: SubCatFltrOptionValidation[];
 }
 
-export class FeatureUpdateValidation {
+export class FilterUpdateValidation {
   @IsNotEmpty()
   @IsString()
   name: string;
