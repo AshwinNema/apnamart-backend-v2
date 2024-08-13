@@ -62,4 +62,8 @@ export class TokenService2 {
       noInitialPassword,
     };
   }
+
+  async findUnique(where, options = {}) {
+    return prisma.token.findUnique({ where, ...options });
+  }
 }
