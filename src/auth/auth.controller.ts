@@ -2,7 +2,6 @@ import {
   Controller,
   Post,
   Body,
-  UnauthorizedException,
   Query,
   Req,
   Next,
@@ -17,24 +16,21 @@ import {
   RefreshTokenValidator,
   GoogleAuth,
   TwitterAccessToken,
+  LogoutValidator,
 } from 'src/validations/auth.validation';
-import { TokenService } from 'src/auth/token/token.service';
-
-import { ConfigService } from '@nestjs/config';
-import { TokenTypes } from '@prisma/client';
 import { TokenService2 } from 'src/auth/token/token2.service';
 import { GoogleAuthService } from './google-auth/google-auth.service';
 import { TwitterAuthService } from './twitter-auth/twitter-auth.service';
 import { TwitterAccessAuthGuard } from './jwt/twitter.jwt';
 import { User } from 'src/decorators';
+import { Auth2Service } from './auth2.service';
 
 @SkipAccessAuth()
 @Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
-    private tokenService: TokenService,
-    private configService: ConfigService,
+    private auth2Service: Auth2Service,
     private tokenService2: TokenService2,
     private googleAuthService: GoogleAuthService,
     private twitterAuthService: TwitterAuthService,
@@ -50,6 +46,11 @@ export class AuthController {
     return this.authService.login(loginCredentails);
   }
 
+  @Post('logout')
+  async logout(@Body() body: LogoutValidator) {
+    return this.auth2Service.logout(body);
+  }
+
   @Post('register')
   async register(@Body() userDetails: registerUser) {
     return this.authService.register(userDetails);
@@ -57,14 +58,7 @@ export class AuthController {
 
   @Post('refresh-token')
   async refreshToken(@Body() tokenDetails: RefreshTokenValidator) {
-    const token = await this.tokenService.verifyToken(
-      tokenDetails.token,
-      TokenTypes.refresh,
-      this.configService.get('jwt').refresh_secret,
-      new UnauthorizedException('Forbidden'),
-    );
-    this.tokenService2.deleteOneToken({ id: token.id });
-    return this.tokenService.generateAuthTokens(token.userId);
+    return this.auth2Service.refreshToken(tokenDetails);
   }
 
   @Post('google')
