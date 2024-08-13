@@ -45,7 +45,7 @@ export class JwtAccessStrategy extends PassportStrategy(
           const tokenStr = request.headers.authorization
             .split('Bearer')[1]
             .trim();
-          const token = await tokenService2.findUnique({
+          const token = await this.tokenService2.findUnique({
             token: tokenStr,
             blackListed: false,
             type: TokenTypes.access,

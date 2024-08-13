@@ -13,6 +13,7 @@ import { UserEntitesModule } from 'src/user-entites/user-entites.module';
 import { GoogleAuthService } from './google-auth/google-auth.service';
 import { TwitterAuthService } from './twitter-auth/twitter-auth.service';
 import { TwitterAcessStrategy } from './jwt/twitter.jwt';
+import { Auth2Service } from './auth2.service';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { TwitterAcessStrategy } from './jwt/twitter.jwt';
     TokenService,
     GoogleAuthService,
     TwitterAuthService,
+    Auth2Service,
   ],
   controllers: [AuthController],
   exports: [TokenService, TokenService2],
