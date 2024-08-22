@@ -9,6 +9,7 @@ interface config {
   NODE_ENV: environments;
   PORT: number;
   DATABASE_URL: string;
+  DIRECT_URL: string;
   JWT_ACCESS_EXPIRATION: number;
   JWT_REFRESH_EXPIRATION: number;
   JWT_ACCESS_SECRET: string;
@@ -34,6 +35,7 @@ const envVarsSchema = z.object({
   ]),
   PORT: z.coerce.number().default(4000),
   DATABASE_URL: z.string().url(),
+  DIRECT_URL: z.string().url(),
   JWT_ACCESS_EXPIRATION: z.coerce.number(),
   JWT_REFRESH_EXPIRATION: z.coerce.number(),
   JWT_ACCESS_SECRET: z.string(),
