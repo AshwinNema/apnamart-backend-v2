@@ -23,6 +23,16 @@ export class LoginValidator {
   role: UserRole;
 }
 
+export class LogoutValidator {
+  @IsString()
+  @IsNotEmpty()
+  access: string;
+
+  @IsString()
+  @IsNotEmpty()
+  refresh: string;
+}
+
 export class RegisterAdminValidator {
   @IsEmail()
   @IsNotEmpty()
