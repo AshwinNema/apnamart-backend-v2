@@ -4,6 +4,7 @@ import {
   IsBoolean,
   IsInt,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsPositive,
   IsString,
@@ -31,6 +32,7 @@ export class Product {
   price: number;
 
   @IsOptional()
+  @IsNumber({}, { each: true })
   @IsArray()
   @ArrayUnique((optionId) => optionId)
   filterOptions: number[];
@@ -50,6 +52,7 @@ export class UpdateProduct {
   price: number;
 
   @IsOptional()
+  @IsNumber({}, { each: true })
   @IsArray()
   @ArrayUnique((optionId) => optionId)
   filterOptions: number[];
