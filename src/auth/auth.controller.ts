@@ -1,4 +1,12 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Query,
+  Req,
+  Next,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SkipAccessAuth } from './jwt/access.jwt';
 import {
@@ -6,21 +14,26 @@ import {
   LoginValidator,
   registerUser,
   RefreshTokenValidator,
+  GoogleAuth,
+  TwitterAccessToken,
+  LogoutValidator,
 } from 'src/validations/auth.validation';
-import { TokenService } from 'src/token/token.service';
-
-import { ConfigService } from '@nestjs/config';
-import { TokenTypes } from '@prisma/client';
-import { TokenService2 } from 'src/token/token2.service';
+import { TokenService2 } from 'src/auth/token/token2.service';
+import { GoogleAuthService } from './google-auth/google-auth.service';
+import { TwitterAuthService } from './twitter-auth/twitter-auth.service';
+import { TwitterAccessAuthGuard } from './jwt/twitter.jwt';
+import { User } from 'src/decorators';
+import { Auth2Service } from './auth2.service';
 
 @SkipAccessAuth()
 @Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
-    private tokenService: TokenService,
-    private configService: ConfigService,
+    private auth2Service: Auth2Service,
     private tokenService2: TokenService2,
+    private googleAuthService: GoogleAuthService,
+    private twitterAuthService: TwitterAuthService,
   ) {}
 
   @Post('register-admin')
@@ -33,6 +46,11 @@ export class AuthController {
     return this.authService.login(loginCredentails);
   }
 
+  @Post('logout')
+  async logout(@Body() body: LogoutValidator) {
+    return this.auth2Service.logout(body);
+  }
+
   @Post('register')
   async register(@Body() userDetails: registerUser) {
     return this.authService.register(userDetails);
@@ -40,12 +58,34 @@ export class AuthController {
 
   @Post('refresh-token')
   async refreshToken(@Body() tokenDetails: RefreshTokenValidator) {
-    const token = await this.tokenService.verifyToken(
-      tokenDetails.token,
-      TokenTypes.refresh,
-      this.configService.get('jwt').refresh_secret,
+    return this.auth2Service.refreshToken(tokenDetails);
+  }
+
+  @Post('google')
+  async googleAuth(@Body() loginCredentails: GoogleAuth) {
+    return this.googleAuthService.googleLoginSignUp(loginCredentails);
+  }
+
+  @Post('twitter/request-token')
+  async requestToken() {
+    return this.twitterAuthService.requestToken();
+  }
+
+  @Post('twitter/access-token')
+  async generateAccessToken(
+    @Query() query: TwitterAccessToken,
+    @Req() req,
+    @Next() next,
+  ) {
+    this.twitterAuthService.generateAccessToken(query, req, next);
+  }
+
+  @UseGuards(TwitterAccessAuthGuard)
+  @Post('twitter/access-token')
+  async getUserToken(@Query() query: TwitterAccessToken, @User() userProfile) {
+    return this.tokenService2.generateDifferentLoginToken(
+      userProfile.userDetails,
+      { role: query.role, name: userProfile.name, email: userProfile.email },
     );
-    this.tokenService2.deleteOneToken({ id: token.id });
-    return this.tokenService.generateAuthTokens(token.userId);
   }
 }

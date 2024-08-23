@@ -1,6 +1,12 @@
-import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
+import {
+  ArgumentMetadata,
+  Injectable,
+  NotFoundException,
+  PipeTransform,
+} from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { create } from 'domain';
+import prisma from 'src/prisma/client';
+
 import {
   SubCatFltrOptionValidation,
   SubCatFltrBodyValidation,
@@ -24,11 +30,20 @@ export const createFilterTransformer = (
 
 @Injectable()
 export class FilterBodyTransformer implements PipeTransform {
-  transform(value: any, metadata: ArgumentMetadata) {
+  async transform(value: any, metadata: ArgumentMetadata) {
     if (metadata.type !== 'custom') {
       return value;
     }
     const { user, body } = value;
+
+    if (
+      !(await prisma.subCategory.findUnique({
+        where: { id: body.subCategoryId },
+      }))
+    ) {
+      throw new NotFoundException('Sub category not found');
+    }
+
     body.createdBy = user.id;
     if (body?.options?.length) {
       body.options = {

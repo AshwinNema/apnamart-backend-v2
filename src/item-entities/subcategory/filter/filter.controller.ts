@@ -13,7 +13,7 @@ import { Roles } from 'src/auth/role/role.guard';
 import { UserRole } from '@prisma/client';
 import { BodyPipe } from 'src/pipes';
 import {
-  FeatureUpdateValidation,
+  FilterUpdateValidation,
   SubCatFltrBodyValidation,
 } from 'src/validations';
 import { FilterBodyTransformer, createFilterTransformer } from './filter.utils';
@@ -27,7 +27,7 @@ export class SubCatFltrController {
   @Get(':id')
   @SkipAccessAuth()
   getFilter(@Param('id', ParseIntPipe) id: number) {
-    return this.subCatFltrService.getFilterById({ id });
+    return this.subCatFltrService.getOneFilter({ id });
   }
 
   @Post()
@@ -41,7 +41,7 @@ export class SubCatFltrController {
   @Put(':id')
   @Roles(UserRole.admin)
   updateFilter(
-    @Body() body: FeatureUpdateValidation,
+    @Body() body: FilterUpdateValidation,
     @Param('id', ParseIntPipe) id: number,
   ) {
     return this.subCatFltrService.updateFilter(id, body);

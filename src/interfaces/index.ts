@@ -6,7 +6,6 @@ export interface UserInterface {
   email: string;
   password: string;
   userRoles: UserRole[];
-  address: string;
   phoneNo: string;
   photo: string;
   cloudinary_public_id: string;

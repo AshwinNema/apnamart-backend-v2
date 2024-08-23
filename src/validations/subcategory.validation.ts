@@ -9,6 +9,7 @@ import {
 } from 'class-validator';
 import { HasMimeType, IsFile, MaxFileSize } from 'nestjs-form-data';
 import { SubcatFltrValidation } from './subcategory-filter.validation';
+import { mimeTypes } from 'src/utils';
 
 export class SubCategoryValidator {
   @IsString()
@@ -34,7 +35,7 @@ export class CreateSubCatValidation {
   @MaxFileSize(4e6, {
     message: 'Maximum size of the file should be 4 mega byte',
   })
-  @HasMimeType(['image/*'], {
+  @HasMimeType(mimeTypes.image, {
     message: 'File must be an image',
   })
   file: Express.Multer.File;

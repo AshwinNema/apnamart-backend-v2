@@ -16,6 +16,7 @@ import { UserEntitesModule } from 'src/user-entites/user-entites.module';
 import { RequestStartTimeTracker } from 'src/middlewares/logger-startTime-tracker';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 import prisma from 'src/prisma/client';
+import { OrdersEntitiesModule } from 'src/orders-entities/orders-entities.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import prisma from 'src/prisma/client';
     ItemEntitiesModule,
     UserEntitesModule,
     NestjsFormDataModule,
+    OrdersEntitiesModule,
   ],
   controllers: [AppController],
   providers: [],
