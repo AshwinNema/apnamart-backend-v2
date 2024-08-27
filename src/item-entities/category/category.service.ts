@@ -8,7 +8,7 @@ import { CloudinaryService } from 'src/uploader/cloudinary/cloudinary.service';
 import { CloudinaryResponse } from '../../utils/types';
 import { Prisma } from '@prisma/client';
 import prisma from 'src/prisma/client';
-import * as _ from 'lodash';
+
 import { SubcategoryService } from '../subcategory/subcategory.service';
 
 @Injectable()

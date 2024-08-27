@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-<<<<<<<< HEAD:src/item-entities/subcategory/filter/filter.service.spec.ts
 import { SubCatFltrService } from './filter.service';
 
 describe('SubCatFltrService', () => {

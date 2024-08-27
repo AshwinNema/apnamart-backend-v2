@@ -1,6 +1,6 @@
 model Category {
   id                   Int           @id @default(autoincrement())
-  name                 String       //@unique
+  name                 String //@unique
   photo                String
   cloudinary_public_id String
   subCategory          SubCategory[]
@@ -12,49 +12,58 @@ model Category {
 }
 
 model SubCategory {
-  id                   Int                 @id @default(autoincrement())
+  id                   Int      @id @default(autoincrement())
   name                 String
   photo                String
   cloudinary_public_id String
-  category             Category            @relation(fields: [categoryId], references: [id])
+  category             Category @relation(fields: [categoryId], references: [id])
   categoryId           Int
-  user                 User                @relation(fields: [createdBy], references: [id])
-  filters              SubCategoryFilter[]
-  product              Product[]
+  user                 User     @relation(fields: [createdBy], references: [id])
+  items                Item[]
   createdBy            Int
-  createdAt            DateTime            @default(now())
-  updatedAt            DateTime            @updatedAt
-  archive              Boolean             @default(false)
-
-  //@@unique([name, categoryId])
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  archive              Boolean  @default(false)
 }
 
-model SubCategoryFilter {
-  id            Int                       @id @default(autoincrement())
-  name          String
-  options       SubCategoryFilterOption[]
-  user          User                      @relation(fields: [createdBy], references: [id])
-  subCategory   SubCategory               @relation(fields: [subCategoryId], references: [id])
-  subCategoryId Int
-  createdBy     Int
-  createdAt     DateTime                  @default(now())
-  updatedAt     DateTime                  @updatedAt
-  archive       Boolean                   @default(false)
-
-  //@@unique([subCategoryId, name])
+model Item {
+  id                   Int          @id @default(autoincrement())
+  name                 String
+  photo                String
+  cloudinary_public_id String
+  subCategory          SubCategory  @relation(fields: [subCategoryId], references: [id])
+  subCategoryId        Int
+  user                 User         @relation(fields: [createdBy], references: [id])
+  product              Product[]
+  features             ItemFilter[]
+  createdBy            Int
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  archive              Boolean      @default(false)
 }
 
-model SubCategoryFilterOption {
-  id        Int               @id @default(autoincrement())
+model ItemFilter {
+  id        Int                @id @default(autoincrement())
   name      String
-  filter    SubCategoryFilter @relation(fields: [filterId], references: [id])
+  options   ItemFilterOption[]
+  user      User               @relation(fields: [createdBy], references: [id])
+  item      Item               @relation(fields: [itemId], references: [id])
+  itemId    Int
+  createdBy Int
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  archive   Boolean            @default(false)
+}
+
+model ItemFilterOption {
+  id        Int        @id @default(autoincrement())
+  name      String
+  filter    ItemFilter @relation(fields: [filterId], references: [id])
   filterId  Int
   product   Product[]
-  user      User              @relation(fields: [createdBy], references: [id])
+  user      User       @relation(fields: [createdBy], references: [id])
   createdBy Int
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
-  archive   Boolean           @default(false)
-
-  // @@unique([filterId, name])
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  archive   Boolean    @default(false)
 }

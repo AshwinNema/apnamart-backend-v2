@@ -6,26 +6,7 @@ export const getPrismaOptions = () => {
   const enableLogging = process.env.ENABLE_PRISMA_LOGGING === 'true';
 
   if (enableLogging) {
-    // options.log = [{ level: 'query', emit: 'event' }, 'info', 'warn', 'error'];
-
-    options.log = [
-      {
-        emit: 'event',
-        level: 'query',
-      },
-      {
-        emit: 'stdout',
-        level: 'error',
-      },
-      {
-        emit: 'stdout',
-        level: 'info',
-      },
-      {
-        emit: 'stdout',
-        level: 'warn',
-      },
-    ];
+    options.log = ['query', 'info', 'warn', 'error'];
   }
   return options;
 };
