@@ -5,29 +5,12 @@ import {
   NotFoundException,
   PipeTransform,
 } from '@nestjs/common';
-import { plainToClass } from 'class-transformer';
 import prisma from 'src/prisma/client';
-import {
-  SubcatFltrValidation,
-  SubCatFltrOptionValidation,
-} from 'src/validations';
 import { SubCategoryValidator } from 'src/validations/subcategory.validation';
 
 export const subCategoryCreateProcessor = (
   subCategoryData: SubCategoryValidator,
 ) => {
-  if (!subCategoryData?.filters) {
-    return subCategoryData;
-  }
-  subCategoryData.filters = subCategoryData.filters.map(
-    (filter: SubcatFltrValidation) => {
-      filter.options =
-        filter?.options?.map?.((filterOption: SubCatFltrOptionValidation) => {
-          return plainToClass(SubCatFltrOptionValidation, filterOption);
-        }) || [];
-      return plainToClass(SubcatFltrValidation, filter);
-    },
-  );
   return subCategoryData;
 };
 

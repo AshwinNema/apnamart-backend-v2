@@ -34,24 +34,7 @@ export class ProductCreateTransformer implements PipeTransform {
     if (!subCategory) {
       throw new NotFoundException('Sub Category not found');
     }
-
-    if (!data.filterOptions.length) {
-      return;
-    }
-
-    const options = await prisma.subCategoryFilterOption.findMany({
-      where: {
-        id: {
-          in: data.filterOptions,
-        },
-        filter: {
-          subCategoryId: data.subCategoryId,
-        },
-      },
-    });
-    if (options.length != data.filterOptions.length) {
-      throw new NotFoundException('Options not found');
-    }
+    
   }
 
   async transform(value: any, metadata: ArgumentMetadata) {
