@@ -1,6 +1,16 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsString, Min } from 'class-validator';
 import { HasMimeType, IsFile, MaxFileSize } from 'nestjs-form-data';
 import { mimeTypes } from 'src/utils';
+import { paginationOptions } from './common.validation';
+import { Type } from 'class-transformer';
+
+export class QueryCategories extends paginationOptions {
+  @Min(1)
+  @IsInt()
+  @Type(() => Number)
+  @IsOptional()
+  id: number;
+}
 
 export class CategoryValidator {
   @IsString()
@@ -21,4 +31,10 @@ export class CreateCatValidation {
     message: 'File must be an image',
   })
   file: Express.Multer.File;
+}
+
+export class SearchByName {
+  @IsNotEmpty()
+  @IsString()
+  name: string;
 }

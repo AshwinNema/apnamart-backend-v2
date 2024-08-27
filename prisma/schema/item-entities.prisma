@@ -1,6 +1,6 @@
 model Category {
   id                   Int           @id @default(autoincrement())
-  name                 String        @unique
+  name                 String       //@unique
   photo                String
   cloudinary_public_id String
   subCategory          SubCategory[]
@@ -26,7 +26,7 @@ model SubCategory {
   updatedAt            DateTime            @updatedAt
   archive              Boolean             @default(false)
 
-  @@unique([name, categoryId])
+  //@@unique([name, categoryId])
 }
 
 model SubCategoryFilter {
@@ -41,7 +41,7 @@ model SubCategoryFilter {
   updatedAt     DateTime                  @updatedAt
   archive       Boolean                   @default(false)
 
-  @@unique([subCategoryId, name])
+  //@@unique([subCategoryId, name])
 }
 
 model SubCategoryFilterOption {
@@ -56,5 +56,5 @@ model SubCategoryFilterOption {
   updatedAt DateTime          @updatedAt
   archive   Boolean           @default(false)
 
-  @@unique([filterId, name])
+  // @@unique([filterId, name])
 }

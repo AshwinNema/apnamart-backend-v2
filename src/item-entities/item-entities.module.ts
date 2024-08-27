@@ -7,6 +7,8 @@ import { SubcategoryModule } from './subcategory/subcategory.module';
 import { RouterModule } from '@nestjs/core';
 import { ProductController } from './product/product.controller';
 import { ProductService } from './product/product.service';
+import { SubcategoryService } from './subcategory/subcategory.service';
+import { CommonService } from 'src/common/common.service';
 
 @Module({
   imports: [
@@ -20,7 +22,12 @@ import { ProductService } from './product/product.service';
       },
     ]),
   ],
-  providers: [CategoryService, ProductService],
+  providers: [
+    CategoryService,
+    ProductService,
+    SubcategoryService,
+    CommonService,
+  ],
   controllers: [CategoryController, ProductController],
 })
 export class ItemEntitiesModule {}

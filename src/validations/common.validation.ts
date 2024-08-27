@@ -1,5 +1,11 @@
-import { plainToClass } from 'class-transformer';
-import { validate, ValidatorOptions, ValidationError } from 'class-validator';
+import { plainToClass, Type } from 'class-transformer';
+import {
+  validate,
+  ValidatorOptions,
+  ValidationError,
+  Min,
+  IsInt,
+} from 'class-validator';
 import { ClassConstructor } from '../utils/types';
 import { ValidatedObject } from '../interfaces';
 import { processNestedValidationError } from 'src/utils';
@@ -25,3 +31,15 @@ export const validateObject = async <T extends object>(
     };
   }
 };
+
+export class paginationOptions {
+  @Min(1)
+  @IsInt()
+  @Type(() => Number)
+  page: number;
+
+  @Min(1)
+  @IsInt()
+  @Type(() => Number)
+  limit: number;
+}

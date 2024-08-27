@@ -78,3 +78,10 @@ export const makeAxiosConfig = (
 
   return config;
 };
+
+export const getPaginationOptions = (page: number, limit: number) => {
+  return {
+    take: limit,
+    skip: (page - 1) * limit,
+  };
+};

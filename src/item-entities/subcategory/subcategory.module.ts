@@ -7,7 +7,6 @@ import { SubCatFltrController } from './filter/filter.controller';
 import { SubCatFltrOptionController } from './filter-option/filter-option.controller';
 import { UploaderModule } from 'src/uploader/uploader.module';
 import { NestjsFormDataModule } from 'nestjs-form-data';
-
 @Module({
   imports: [UploaderModule, NestjsFormDataModule],
   providers: [SubcategoryService, SubCatFltrService, SubCatFltrOptService],
