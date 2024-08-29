@@ -75,12 +75,25 @@ export class CategoryService {
     }
 
     if (await this.subCategoryService.getOneSubCategory({ categoryId: id })) {
-      throw new BadRequestException('Sub Category not found');
+      throw new BadRequestException(
+        'Category cannot be deleted because it is attached with subcategory',
+      );
     }
     await prisma.category.update({ where: { id }, data: { archive: true } });
   }
 
   async searchByName(term: string) {
-    return prisma.$queryRaw`SELECT "id", "name" FROM "public"."Category" WHERE ("archive"=false AND to_tsvector('english', "public"."Category"."name") @@ to_tsquery('english', ${term}));`;
+    return prisma.$queryRaw`SELECT "id", "name", "photo" FROM "public"."Category" WHERE ("archive"=false AND to_tsvector('english', "public"."Category"."name") @@ to_tsquery('english', ${term}));`;
+  }
+
+  async getCatList() {
+    return prisma.category.findMany({
+      select: {
+        id: true,
+        name: true,
+        photo: true,
+      },
+      omit: null,
+    });
   }
 }

@@ -82,8 +82,15 @@ export class CategoryController {
     return { success: true };
   }
 
-  @Get('name-list')
+  @Get('search-by-name')
+  @Roles(UserRole.admin)
   async nameList(@Query() query: SearchByName) {
     return this.categoryService.searchByName(query.name);
+  }
+
+  @Get('list')
+  @Roles(UserRole.admin)
+  async catList() {
+    return this.categoryService.getCatList();
   }
 }

@@ -6,7 +6,11 @@ import {
   PipeTransform,
 } from '@nestjs/common';
 import prisma from 'src/prisma/client';
-import { SubCategoryValidator } from 'src/validations/subcategory.validation';
+import {
+  QuerySubCategories,
+  SubCategoryValidator,
+} from 'src/validations/subcategory.validation';
+import * as _ from 'lodash';
 
 export const subCategoryCreateProcessor = (
   subCategoryData: SubCategoryValidator,
@@ -62,3 +66,36 @@ export class SubCatCrtDataPipe implements PipeTransform {
     return value;
   }
 }
+
+export const getQuerySubCatArgs = (
+  query: QuerySubCategories,
+): [
+  string,
+  {
+    limit: number;
+    page: number;
+  },
+  {
+    [key: string]: any;
+    where?: object;
+  },
+] => {
+  const paginationOptions = _.pick(query, ['limit', 'page']);
+  const where = _.pick(query, ['id']);
+
+  return [
+    'subCategory',
+    paginationOptions,
+    {
+      where,
+      include: {
+        category: {
+          select: {
+            name: true,
+            id: true,
+          },
+        },
+      },
+    },
+  ];
+};

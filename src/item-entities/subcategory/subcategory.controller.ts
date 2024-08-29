@@ -9,13 +9,16 @@ import {
   ParseIntPipe,
   UseInterceptors,
   UploadedFile,
+  Query,
+  Delete,
 } from '@nestjs/common';
-
 import { Roles } from 'src/auth/role/role.guard';
 import { UserRole } from '@prisma/client';
 import { FormDataRequest } from 'nestjs-form-data';
 import {
   CreateSubCatValidation,
+  QuerySubCategories,
+  SearchByName,
   SubCategoryValidator,
 } from 'src/validations/subcategory.validation';
 import { SubcategoryService } from './subcategory.service';
@@ -25,18 +28,24 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { MultiPartDataPipe } from 'src/pipes';
 import { RequestProcessor } from 'src/decorators';
 import {
+  getQuerySubCatArgs,
   SubCatCrtDataPipe,
   subCategoryCreateProcessor,
 } from './subcategory.util';
+import * as _ from 'lodash';
+import { CommonService } from 'src/common/common.service';
 
-@Controller()
+@Controller('subcategory')
 export class SubcategoryController {
-  constructor(private subCategoryService: SubcategoryService) {}
+  constructor(
+    private subCategoryService: SubcategoryService,
+    private commonService: CommonService,
+  ) {}
 
   @Get()
   @SkipAccessAuth()
-  getSubCategory() {
-    return this.subCategoryService.getSubCategories();
+  getSubCategory(@Query() query: QuerySubCategories) {
+    return this.commonService.queryData(...getQuerySubCatArgs(query));
   }
 
   @Post()
@@ -72,5 +81,17 @@ export class SubcategoryController {
     @Body() body: SubCategoryInterface,
   ) {
     return this.subCategoryService.updateSubCategory(id, body);
+  }
+
+  @Delete(':id')
+  @Roles(UserRole.admin)
+  async deleteSubCategory(@Param('id', ParseIntPipe) id: number) {
+    await this.subCategoryService.deleteSubCatById(id);
+    return { success: true };
+  }
+
+  @Get('search-by-name')
+  async nameList(@Query() query: SearchByName) {
+    return this.subCategoryService.searchByName(query.name);
   }
 }

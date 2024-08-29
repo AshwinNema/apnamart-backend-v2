@@ -8,10 +8,14 @@ import { CloudinaryService } from 'src/uploader/cloudinary/cloudinary.service';
 import { CloudinaryResponse } from '../../utils/types';
 import prisma from 'src/prisma/client';
 import { SubCategoryInterface } from 'src/interfaces';
+import { ItemService } from '../item/item.service';
 
 @Injectable()
 export class SubcategoryService {
-  constructor(private cloudinaryService: CloudinaryService) {}
+  constructor(
+    private cloudinaryService: CloudinaryService,
+    private itemService: ItemService,
+  ) {}
 
   getUniqueSubCategory(filter: Prisma.SubCategoryWhereUniqueInput) {
     return prisma.subCategory.findUnique({
@@ -75,5 +79,27 @@ export class SubcategoryService {
 
   getSubCategories() {
     return prisma.subCategory.findMany({});
+  }
+
+  async searchByName(term: string) {
+    return prisma.$queryRaw`SELECT "id", "name", "photo" FROM "public"."SubCategory" WHERE ("archive"=false AND to_tsvector('english', "public"."SubCategory"."name") @@ to_tsquery('english', ${term}));`;
+  }
+
+  async deleteSubCatById(id: number) {
+    const subCat = await this.getUniqueSubCategory({ id });
+    if (!subCat) {
+      throw new NotFoundException('Sub category not found');
+    }
+
+    if (await this.itemService.getOneItem({ subCategoryId: id })) {
+      throw new BadRequestException(
+        'Sub Category cannot be deleted because it is attached with items',
+      );
+    }
+
+    return prisma.subCategory.update({
+      where: { id },
+      data: { archive: true },
+    });
   }
 }

@@ -23,6 +23,8 @@ export async function passwordModification({ args, query }) {
 
 export function commonHook({ args, query }) {
   args.where = { archive: false, ...args.where };
+  // In case we are using select, then we prevent using default omit, by setting omit:null in the query because select and omit are not permitted at the same time
+  if (args.omit === null) return query(args);
   args.omit = {
     createdAt: true,
     updatedAt: true,
