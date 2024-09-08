@@ -1,13 +1,22 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateCategoryData, UserInterface } from 'src/interfaces';
 import { CloudinaryService } from 'src/uploader/cloudinary/cloudinary.service';
 import { CloudinaryResponse } from '../../utils/types';
 import { Prisma } from '@prisma/client';
 import prisma from 'src/prisma/client';
 
+import { SubcategoryService } from '../subcategory/subcategory.service';
+
 @Injectable()
 export class CategoryService {
-  constructor(private cloudinaryService: CloudinaryService) {}
+  constructor(
+    private cloudinaryService: CloudinaryService,
+    private subCategoryService: SubcategoryService,
+  ) {}
 
   async getUnqiueCategory(filter: Prisma.CategoryWhereUniqueInput) {
     return prisma.category.findUnique({
@@ -21,7 +30,7 @@ export class CategoryService {
     user: UserInterface,
   ) {
     if (
-      await prisma.category.findUnique({
+      await prisma.category.findFirst({
         where: { name: data.name },
       })
     ) {
@@ -41,6 +50,16 @@ export class CategoryService {
   }
 
   async updateCategory(id: number, update: Prisma.CategoryUpdateInput) {
+    if (
+      update.name &&
+      (await prisma.category.findFirst({
+        where: { id: { not: id }, name: update.name as string },
+      }))
+    ) {
+      throw new BadRequestException(
+        'Category with same name is already present in database',
+      );
+    }
     return prisma.category.update({ where: { id }, data: update });
   }
 
@@ -48,7 +67,33 @@ export class CategoryService {
     await this.cloudinaryService.deletePrismaEntityFile('category', id);
     return this.cloudinaryService.updatePrismaEntityFile('category', id, file);
   }
-  async getCategories() {
-    return prisma.category.findMany({});
+
+  async deleteCategoryById(id: number) {
+    const cat = await this.getUnqiueCategory({ id });
+    if (!cat) {
+      throw new NotFoundException('Category not found');
+    }
+
+    if (await this.subCategoryService.getOneSubCategory({ categoryId: id })) {
+      throw new BadRequestException(
+        'Category cannot be deleted because it is attached with subcategory',
+      );
+    }
+    await prisma.category.update({ where: { id }, data: { archive: true } });
+  }
+
+  async searchByName(term: string) {
+    return prisma.$queryRaw`SELECT "id", "name", "photo" FROM "public"."Category" WHERE ("archive"=false AND to_tsvector('english', "public"."Category"."name") @@ to_tsquery('english', ${term}));`;
+  }
+
+  async getCatList() {
+    return prisma.category.findMany({
+      select: {
+        id: true,
+        name: true,
+        photo: true,
+      },
+      omit: null,
+    });
   }
 }

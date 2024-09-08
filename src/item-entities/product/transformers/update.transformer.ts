@@ -24,21 +24,6 @@ export class ProductUpdateTransformer implements PipeTransform {
       throw new NotFoundException('Product not found');
     }
 
-    if (body?.filterOptions?.length) {
-      const options = await prisma.subCategoryFilterOption.findMany({
-        where: {
-          id: {
-            in: body.filterOptions,
-          },
-          filter: {
-            subCategoryId: product.subCategoryId,
-          },
-        },
-      });
-      if (options.length != body.filterOptions.length) {
-        throw new NotFoundException('Options not found');
-      }
-    }
     return product;
   }
 

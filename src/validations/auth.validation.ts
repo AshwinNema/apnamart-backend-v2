@@ -1,4 +1,5 @@
 import { UserRole } from '@prisma/client';
+import { Transform } from 'class-transformer';
 import {
   IsEmail,
   IsNotEmpty,
@@ -9,6 +10,7 @@ import {
 import { NonAdminRoleEnum, NonAdminRoles, passwordValidation } from 'src/utils';
 
 export class LoginValidator {
+  @Transform(({ value }) => value?.trim()?.toLowerCase())
   @IsEmail()
   @IsNotEmpty()
   email: string;
@@ -34,6 +36,7 @@ export class LogoutValidator {
 }
 
 export class RegisterAdminValidator {
+  @Transform(({ value }) => value?.trim()?.toLowerCase())
   @IsEmail()
   @IsNotEmpty()
   email: string;

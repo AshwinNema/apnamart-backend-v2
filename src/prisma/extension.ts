@@ -50,6 +50,10 @@ export const prismaExtension = Prisma.defineExtension({
       findUniqueOrThrow(queryParams) {
         return commonHook(queryParams);
       },
+      count({ args, query }) {
+        args.where = { archive: false, ...args.where };
+        return query(args);
+      },
     },
   },
 });

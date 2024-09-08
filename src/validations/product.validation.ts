@@ -79,7 +79,7 @@ export class CreateProductValidation {
   @IsFiles()
   @MaxFileSize(2e6, {
     each: true,
-    message: 'Maximum size of the filesdfdf should be 2 mega byte',
+    message: 'Maximum size of the files should be 2 mega byte',
   })
   @HasMimeType(mimeTypes.imageOrVideo, {
     each: true,

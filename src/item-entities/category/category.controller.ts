@@ -9,26 +9,42 @@ import {
   UseInterceptors,
   UploadedFile,
   Get,
+  Query,
+  Delete,
 } from '@nestjs/common';
 import { UserRole } from '@prisma/client';
 import { FormDataRequest } from 'nestjs-form-data';
 import { Roles } from 'src/auth/role/role.guard';
-import { CategoryValidator, CreateCatValidation } from 'src/validations';
+import {
+  CategoryValidator,
+  CreateCatValidation,
+  QueryCategories,
+  SearchByName,
+} from 'src/validations';
 import { CategoryService } from './category.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SkipAccessAuth } from 'src/auth/jwt/access.jwt';
 import { CreateCategoryData } from 'src/interfaces';
 import { MultiPartDataPipe } from 'src/pipes';
 import { User } from 'src/decorators';
+import { CommonService } from 'src/common/common.service';
+import * as _ from 'lodash';
 
 @Controller('category')
 export class CategoryController {
-  constructor(private categoryService: CategoryService) {}
+  constructor(
+    private categoryService: CategoryService,
+    private commonService: CommonService,
+  ) {}
 
   @Get()
   @SkipAccessAuth()
-  getCategory() {
-    return this.categoryService.getCategories();
+  getCategory(@Query() query: QueryCategories) {
+    const paginationOptions = _.pick(query, ['limit', 'page']);
+    const where = _.pick(query, ['id']);
+    return this.commonService.queryData('category', paginationOptions, {
+      where,
+    });
   }
 
   @Post()
@@ -57,5 +73,24 @@ export class CategoryController {
     @Body() body: CategoryValidator,
   ) {
     return this.categoryService.updateCategory(id, body);
+  }
+
+  @Delete(':id')
+  @Roles(UserRole.admin)
+  async deleteCategory(@Param('id', ParseIntPipe) id: number) {
+    await this.categoryService.deleteCategoryById(id);
+    return { success: true };
+  }
+
+  @Get('search-by-name')
+  @Roles(UserRole.admin)
+  async nameList(@Query() query: SearchByName) {
+    return this.categoryService.searchByName(query.name);
+  }
+
+  @Get('list')
+  @Roles(UserRole.admin)
+  async catList() {
+    return this.categoryService.getCatList();
   }
 }

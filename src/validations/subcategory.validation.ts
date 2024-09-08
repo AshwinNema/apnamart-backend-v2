@@ -1,15 +1,16 @@
-import {
-  IsNotEmpty,
-  IsString,
-  IsInt,
-  Min,
-  IsArray,
-  IsOptional,
-  ValidateNested,
-} from 'class-validator';
+import { IsNotEmpty, IsString, IsInt, Min, IsOptional } from 'class-validator';
 import { HasMimeType, IsFile, MaxFileSize } from 'nestjs-form-data';
-import { SubcatFltrValidation } from './subcategory-filter.validation';
 import { mimeTypes } from 'src/utils';
+import { paginationOptions } from './common.validation';
+import { Type } from 'class-transformer';
+
+export class QuerySubCategories extends paginationOptions {
+  @Min(1)
+  @IsInt()
+  @Type(() => Number)
+  @IsOptional()
+  id: number;
+}
 
 export class SubCategoryValidator {
   @IsString()
@@ -18,12 +19,16 @@ export class SubCategoryValidator {
 
   @IsInt()
   @Min(1)
+  @Type(() => Number)
   categoryId: number;
+}
 
+export class SubCatListValidator {
+  @IsInt()
+  @Min(1)
+  @Type(() => Number)
   @IsOptional()
-  @IsArray()
-  @ValidateNested()
-  filters: SubcatFltrValidation[];
+  categoryId: number;
 }
 
 export class CreateSubCatValidation {
