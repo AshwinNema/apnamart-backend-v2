@@ -8,17 +8,33 @@ import { ProductService } from './product/product.service';
 import { SubcategoryService } from './subcategory/subcategory.service';
 import { CommonService } from 'src/common/common.service';
 import { SubcategoryController } from './subcategory/subcategory.controller';
-import { ItemService } from './item/item.service';
+import { ItemModule } from './item/item.module';
+import { RouterModule } from '@nestjs/core';
+import { Subcategory2Controller } from './subcategory/subcategory2.controller';
 
 @Module({
-  imports: [NestjsFormDataModule, UploaderModule],
+  imports: [
+    NestjsFormDataModule,
+    UploaderModule,
+    ItemModule,
+    RouterModule.register([
+      {
+        path: 'item',
+        module: ItemModule,
+      },
+    ]),
+  ],
   providers: [
     CategoryService,
     ProductService,
     SubcategoryService,
-    ItemService,
     CommonService,
   ],
-  controllers: [CategoryController, ProductController, SubcategoryController],
+  controllers: [
+    CategoryController,
+    ProductController,
+    SubcategoryController,
+    Subcategory2Controller,
+  ],
 })
 export class ItemEntitiesModule {}

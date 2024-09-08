@@ -6,11 +6,7 @@ import {
   PipeTransform,
 } from '@nestjs/common';
 import prisma from 'src/prisma/client';
-import {
-  QuerySubCategories,
-  SubCategoryValidator,
-} from 'src/validations/subcategory.validation';
-import * as _ from 'lodash';
+import { SubCategoryValidator } from 'src/validations/subcategory.validation';
 
 export const subCategoryCreateProcessor = (
   subCategoryData: SubCategoryValidator,
@@ -20,7 +16,7 @@ export const subCategoryCreateProcessor = (
 
 const validatePipeData = async (data: SubCategoryValidator) => {
   const categoryData = await prisma.category.findUnique({
-    where: { id: data.categoryId },
+    where: { id: data.categoryId,  },
   });
   if (!categoryData) {
     throw new NotFoundException('Category not found');
@@ -28,7 +24,7 @@ const validatePipeData = async (data: SubCategoryValidator) => {
 
   if (
     await prisma.subCategory.findFirst({
-      where: { name: data.name, categoryId: data.categoryId },
+      where: {  name: data.name, categoryId: data.categoryId },
     })
   ) {
     throw new BadRequestException(
@@ -66,36 +62,3 @@ export class SubCatCrtDataPipe implements PipeTransform {
     return value;
   }
 }
-
-export const getQuerySubCatArgs = (
-  query: QuerySubCategories,
-): [
-  string,
-  {
-    limit: number;
-    page: number;
-  },
-  {
-    [key: string]: any;
-    where?: object;
-  },
-] => {
-  const paginationOptions = _.pick(query, ['limit', 'page']);
-  const where = _.pick(query, ['id']);
-
-  return [
-    'subCategory',
-    paginationOptions,
-    {
-      where,
-      include: {
-        category: {
-          select: {
-            name: true,
-            id: true,
-          },
-        },
-      },
-    },
-  ];
-};

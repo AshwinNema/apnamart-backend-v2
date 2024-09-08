@@ -32,9 +32,3 @@ export class CreateCatValidation {
   })
   file: Express.Multer.File;
 }
-
-export class SearchByName {
-  @IsNotEmpty()
-  @IsString()
-  name: string;
-}

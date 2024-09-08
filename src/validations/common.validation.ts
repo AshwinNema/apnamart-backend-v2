@@ -5,6 +5,8 @@ import {
   ValidationError,
   Min,
   IsInt,
+  IsNotEmpty,
+  IsString,
 } from 'class-validator';
 import { ClassConstructor } from '../utils/types';
 import { ValidatedObject } from '../interfaces';
@@ -42,4 +44,10 @@ export class paginationOptions {
   @IsInt()
   @Type(() => Number)
   limit: number;
+}
+
+export class SearchByName {
+  @IsNotEmpty()
+  @IsString()
+  name: string;
 }

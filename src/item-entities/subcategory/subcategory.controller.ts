@@ -18,7 +18,6 @@ import { FormDataRequest } from 'nestjs-form-data';
 import {
   CreateSubCatValidation,
   QuerySubCategories,
-  SearchByName,
   SubCategoryValidator,
 } from 'src/validations/subcategory.validation';
 import { SubcategoryService } from './subcategory.service';
@@ -30,18 +29,19 @@ import { RequestProcessor } from 'src/decorators';
 import {
   getQuerySubCatArgs,
   SubCatCrtDataPipe,
+  SubCatDeleteValidator,
   subCategoryCreateProcessor,
-} from './subcategory.util';
+  UpdateSubCatValidator,
+} from './utils';
 import * as _ from 'lodash';
 import { CommonService } from 'src/common/common.service';
-
+import { SearchByName } from 'src/validations';
 @Controller('subcategory')
 export class SubcategoryController {
   constructor(
     private subCategoryService: SubcategoryService,
     private commonService: CommonService,
   ) {}
-
   @Get()
   @SkipAccessAuth()
   getSubCategory(@Query() query: QuerySubCategories) {
@@ -75,15 +75,18 @@ export class SubcategoryController {
   }
 
   @Put(':id')
+  @UsePipes(new UpdateSubCatValidator())
   @Roles(UserRole.admin)
   updateSubCategory(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: SubCategoryInterface,
+    @RequestProcessor() _,
   ) {
-    return this.subCategoryService.updateSubCategory(id, body);
+    return this.subCategoryService.updateSubCategoryById(id, body);
   }
 
   @Delete(':id')
+  @UsePipes(new SubCatDeleteValidator())
   @Roles(UserRole.admin)
   async deleteSubCategory(@Param('id', ParseIntPipe) id: number) {
     await this.subCategoryService.deleteSubCatById(id);

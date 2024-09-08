@@ -28,3 +28,20 @@ export interface SubCategoryInterface {
   name: string;
   categoryId: number;
 }
+
+export interface CreateFilterOption {
+  name: string;
+  createdBy: number;
+}
+
+export interface CreateFilter {
+  name: string;
+  createdBy: number;
+  options: CreateFilterOption[];
+}
+
+export interface CreateItemData {
+  name: string;
+  subCategoryId: number;
+  filters: CreateFilter[];
+}

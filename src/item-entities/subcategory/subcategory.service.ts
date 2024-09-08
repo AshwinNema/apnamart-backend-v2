@@ -1,21 +1,13 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { CloudinaryService } from 'src/uploader/cloudinary/cloudinary.service';
 import { CloudinaryResponse } from '../../utils/types';
 import prisma from 'src/prisma/client';
 import { SubCategoryInterface } from 'src/interfaces';
-import { ItemService } from '../item/item.service';
 
 @Injectable()
 export class SubcategoryService {
-  constructor(
-    private cloudinaryService: CloudinaryService,
-    private itemService: ItemService,
-  ) {}
+  constructor(private cloudinaryService: CloudinaryService) {}
 
   getUniqueSubCategory(filter: Prisma.SubCategoryWhereUniqueInput) {
     return prisma.subCategory.findUnique({
@@ -42,26 +34,7 @@ export class SubcategoryService {
     });
   }
 
-  async updateSubCategory(id: number, update: SubCategoryInterface) {
-    const data = await this.getUniqueSubCategory({ id });
-    if (!data) {
-      throw new NotFoundException('Sub category data not found');
-    }
-
-    if (update.name) {
-      const filter = { id: { not: id }, name: update.name, categoryId: null };
-      if (update.categoryId) {
-        filter.categoryId = update.categoryId;
-      } else {
-        filter.categoryId = data.categoryId;
-      }
-      const duplicateData = await this.getOneSubCategory(filter);
-      if (duplicateData) {
-        throw new BadRequestException(
-          'Sub category with this name is already present in the system for the given category',
-        );
-      }
-    }
+  async updateSubCategoryById(id: number, update: SubCategoryInterface) {
     return prisma.subCategory.update({
       where: { id },
       data: update,
@@ -86,20 +59,21 @@ export class SubcategoryService {
   }
 
   async deleteSubCatById(id: number) {
-    const subCat = await this.getUniqueSubCategory({ id });
-    if (!subCat) {
-      throw new NotFoundException('Sub category not found');
-    }
-
-    if (await this.itemService.getOneItem({ subCategoryId: id })) {
-      throw new BadRequestException(
-        'Sub Category cannot be deleted because it is attached with items',
-      );
-    }
-
     return prisma.subCategory.update({
       where: { id },
       data: { archive: true },
+    });
+  }
+
+  async getSubCatList(filter: Prisma.SubCategoryWhereInput) {
+    return prisma.subCategory.findMany({
+      where: filter,
+      select: {
+        id: true,
+        name: true,
+        photo: true,
+      },
+      omit: null,
     });
   }
 }
