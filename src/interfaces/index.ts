@@ -6,7 +6,6 @@ export interface UserInterface {
   email: string;
   password: string;
   userRoles: UserRole[];
-  address: string;
   phoneNo: string;
   photo: string;
   cloudinary_public_id: string;
@@ -28,4 +27,21 @@ export interface CreateCategoryData {
 export interface SubCategoryInterface {
   name: string;
   categoryId: number;
+}
+
+export interface CreateFilterOption {
+  name: string;
+  createdBy: number;
+}
+
+export interface CreateFilter {
+  name: string;
+  createdBy: number;
+  options: CreateFilterOption[];
+}
+
+export interface CreateItemData {
+  name: string;
+  subCategoryId: number;
+  filters: CreateFilter[];
 }

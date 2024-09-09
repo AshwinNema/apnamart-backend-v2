@@ -44,3 +44,15 @@ model Order {
   updatedAt          DateTime                 @updatedAt
   archive            Boolean                  @default(false)
 }
+
+model DeliveryArea {
+  id         Int      @id @default(autoincrement())
+  radius     Decimal
+  latitude   Decimal
+  longtitude Decimal
+  user       User     @relation(fields: [createdBy], references: [id])
+  createdBy  Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  archive    Boolean  @default(false)
+}

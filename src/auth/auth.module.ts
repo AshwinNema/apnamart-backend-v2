@@ -10,6 +10,10 @@ import { envConfig } from 'src/config/config';
 import { TokenService2 } from 'src/auth/token/token2.service';
 import { RolesGuard } from './role/role.guard';
 import { UserEntitesModule } from 'src/user-entites/user-entites.module';
+import { GoogleAuthService } from './google-auth/google-auth.service';
+import { TwitterAuthService } from './twitter-auth/twitter-auth.service';
+import { TwitterAcessStrategy } from './jwt/twitter.jwt';
+import { Auth2Service } from './auth2.service';
 
 @Module({
   imports: [
@@ -30,6 +34,7 @@ import { UserEntitesModule } from 'src/user-entites/user-entites.module';
   providers: [
     AuthService,
     JwtAccessStrategy,
+    TwitterAcessStrategy,
     TokenService2,
     {
       provide: APP_GUARD,
@@ -40,7 +45,11 @@ import { UserEntitesModule } from 'src/user-entites/user-entites.module';
       useClass: RolesGuard,
     },
     TokenService,
+    GoogleAuthService,
+    TwitterAuthService,
+    Auth2Service,
   ],
   controllers: [AuthController],
+  exports: [TokenService, TokenService2],
 })
 export class AuthModule {}

@@ -22,26 +22,24 @@ model ProductPhoto {
 }
 
 model Product {
-  id             Int                       @id @default(autoincrement())
+  id             Int                @id @default(autoincrement())
   name           String
   price          Float
-  photos         ProductPhoto[]            @relation("Photos")
-  thumbNail      ProductPhoto?             @relation("Thumbnail")
+  photos         ProductPhoto[]     @relation("Photos")
+  thumbNail      ProductPhoto?      @relation("Thumbnail")
   description    String
-  rating         Float                     @default(0)
-  totalReviewers Int                       @default(0)
-  totalRatings   Int                       @default(0)
-  quantity       Int                       @default(0)
-  subCategory    SubCategory               @relation(fields: [subCategoryId], references: [id])
-  subCategoryId  Int
-  filterOptions  SubCategoryFilterOption[]
-  user           User                      @relation(fields: [merchant], references: [id])
+  rating         Float              @default(0)
+  totalReviewers Int                @default(0)
+  totalRatings   Int                @default(0)
+  quantity       Int                @default(0)
+  item           Item               @relation(fields: [itemId], references: [id])
+  itemId         Int
+  filterOptions  ItemFilterOption[]
+  user           User               @relation(fields: [merchant], references: [id])
   merchant       Int
   orderItem      OrderItem[]
-  available      Boolean                   @default(true)
-  createdAt      DateTime                  @default(now())
-  updatedAt      DateTime                  @updatedAt
-  archive        Boolean                   @default(false)
-
-  @@unique([subCategoryId, name])
+  available      Boolean            @default(true)
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  archive        Boolean            @default(false)
 }

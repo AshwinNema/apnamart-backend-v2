@@ -9,13 +9,15 @@ import {
   ParseIntPipe,
   UseInterceptors,
   UploadedFile,
+  Query,
+  Delete,
 } from '@nestjs/common';
-
 import { Roles } from 'src/auth/role/role.guard';
 import { UserRole } from '@prisma/client';
 import { FormDataRequest } from 'nestjs-form-data';
 import {
   CreateSubCatValidation,
+  QuerySubCategories,
   SubCategoryValidator,
 } from 'src/validations/subcategory.validation';
 import { SubcategoryService } from './subcategory.service';
@@ -25,18 +27,25 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { MultiPartDataPipe } from 'src/pipes';
 import { RequestProcessor } from 'src/decorators';
 import {
+  getQuerySubCatArgs,
   SubCatCrtDataPipe,
+  SubCatDeleteValidator,
   subCategoryCreateProcessor,
-} from './subcategory.util';
-
-@Controller()
+  UpdateSubCatValidator,
+} from './utils';
+import * as _ from 'lodash';
+import { CommonService } from 'src/common/common.service';
+import { SearchByName } from 'src/validations';
+@Controller('subcategory')
 export class SubcategoryController {
-  constructor(private subCategoryService: SubcategoryService) {}
-
+  constructor(
+    private subCategoryService: SubcategoryService,
+    private commonService: CommonService,
+  ) {}
   @Get()
   @SkipAccessAuth()
-  getSubCategory() {
-    return this.subCategoryService.getSubCategories();
+  getSubCategory(@Query() query: QuerySubCategories) {
+    return this.commonService.queryData(...getQuerySubCatArgs(query));
   }
 
   @Post()
@@ -66,11 +75,26 @@ export class SubcategoryController {
   }
 
   @Put(':id')
+  @UsePipes(new UpdateSubCatValidator())
   @Roles(UserRole.admin)
   updateSubCategory(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: SubCategoryInterface,
+    @RequestProcessor() _,
   ) {
-    return this.subCategoryService.updateSubCategory(id, body);
+    return this.subCategoryService.updateSubCategoryById(id, body);
+  }
+
+  @Delete(':id')
+  @UsePipes(new SubCatDeleteValidator())
+  @Roles(UserRole.admin)
+  async deleteSubCategory(@Param('id', ParseIntPipe) id: number) {
+    await this.subCategoryService.deleteSubCatById(id);
+    return { success: true };
+  }
+
+  @Get('search-by-name')
+  async nameList(@Query() query: SearchByName) {
+    return this.subCategoryService.searchByName(query.name);
   }
 }

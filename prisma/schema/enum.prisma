@@ -20,3 +20,9 @@ enum TokenTypes {
   access
   // verify_email
 }
+
+enum AddressType {
+  home
+  work
+  others
+}

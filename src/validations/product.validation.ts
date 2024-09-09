@@ -4,6 +4,7 @@ import {
   IsBoolean,
   IsInt,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsPositive,
   IsString,
@@ -31,6 +32,7 @@ export class Product {
   price: number;
 
   @IsOptional()
+  @IsNumber({}, { each: true })
   @IsArray()
   @ArrayUnique((optionId) => optionId)
   filterOptions: number[];
@@ -50,6 +52,7 @@ export class UpdateProduct {
   price: number;
 
   @IsOptional()
+  @IsNumber({}, { each: true })
   @IsArray()
   @ArrayUnique((optionId) => optionId)
   filterOptions: number[];
@@ -76,7 +79,7 @@ export class CreateProductValidation {
   @IsFiles()
   @MaxFileSize(2e6, {
     each: true,
-    message: 'Maximum size of the filesdfdf should be 2 mega byte',
+    message: 'Maximum size of the files should be 2 mega byte',
   })
   @HasMimeType(mimeTypes.imageOrVideo, {
     each: true,

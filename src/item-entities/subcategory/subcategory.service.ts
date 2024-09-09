@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { CloudinaryService } from 'src/uploader/cloudinary/cloudinary.service';
 import { CloudinaryResponse } from '../../utils/types';
@@ -38,26 +34,7 @@ export class SubcategoryService {
     });
   }
 
-  async updateSubCategory(id: number, update: SubCategoryInterface) {
-    const data = await this.getUniqueSubCategory({ id });
-    if (!data) {
-      throw new NotFoundException('Sub category data not found');
-    }
-
-    if (update.name) {
-      const filter = { id: { not: id }, name: update.name, categoryId: null };
-      if (update.categoryId) {
-        filter.categoryId = update.categoryId;
-      } else {
-        filter.categoryId = data.categoryId;
-      }
-      const duplicateData = await this.getOneSubCategory(filter);
-      if (duplicateData) {
-        throw new BadRequestException(
-          'Sub category with this name is already present in the system for the given category',
-        );
-      }
-    }
+  async updateSubCategoryById(id: number, update: SubCategoryInterface) {
     return prisma.subCategory.update({
       where: { id },
       data: update,
@@ -75,5 +52,28 @@ export class SubcategoryService {
 
   getSubCategories() {
     return prisma.subCategory.findMany({});
+  }
+
+  async searchByName(term: string) {
+    return prisma.$queryRaw`SELECT "id", "name", "photo" FROM "public"."SubCategory" WHERE ("archive"=false AND to_tsvector('english', "public"."SubCategory"."name") @@ to_tsquery('english', ${term}));`;
+  }
+
+  async deleteSubCatById(id: number) {
+    return prisma.subCategory.update({
+      where: { id },
+      data: { archive: true },
+    });
+  }
+
+  async getSubCatList(filter: Prisma.SubCategoryWhereInput) {
+    return prisma.subCategory.findMany({
+      where: filter,
+      select: {
+        id: true,
+        name: true,
+        photo: true,
+      },
+      omit: null,
+    });
   }
 }

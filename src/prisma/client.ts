@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { getPrismaOptions } from './utils';
 import { prismaExtension } from './extension';
+import { getPrismaOptions } from './utils';
 
 const prisma = new PrismaClient(getPrismaOptions()).$extends(prismaExtension);
 

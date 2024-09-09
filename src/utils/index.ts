@@ -1,5 +1,5 @@
-import { User, UserRole } from '@prisma/client';
-import { UserInterface } from '../interfaces';
+import { UserRole } from '@prisma/client';
+import { AxiosRequestConfig } from 'axios';
 import { ValidationError } from 'class-validator';
 
 export const getTokenExpiration = (expirationSec: number): Date => {
@@ -9,7 +9,7 @@ export const getTokenExpiration = (expirationSec: number): Date => {
 };
 
 export const passwordValidation = {
-  regex: /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8}$/,
+  regex: /(?=.*[A-Z])(?=.*\d).{8,}|(?=.*\d)(?=.*[A-Z]).{8,}/,
   message:
     'password should contain 1 capital letter, 1 number and should have a length of atleast 8 characters',
 };
@@ -20,7 +20,26 @@ export const mimeTypes = {
   imageOrVideo: ['image/*', 'video/*'],
 };
 
+export enum axiosMethods {
+  get = 'GET',
+  put = 'PUT',
+  post = 'POST',
+  delete = 'DELETE',
+}
+export interface params {
+  [key: string]: number | string | boolean;
+}
+
 export type NonAdminRoles = Exclude<UserRole, 'admin'>;
+
+export enum NonAdminRoleEnum {
+  merchant = 'merchant',
+  customer = 'customer',
+}
+
+export enum OtherTokenTypes {
+  twitter = 'twitter',
+}
 
 export const processNestedValidationError = (errors: ValidationError[]) => {
   return errors
@@ -34,4 +53,35 @@ export const processNestedValidationError = (errors: ValidationError[]) => {
       return '';
     })
     .join(', ');
+};
+
+export const makeAxiosConfig = (
+  method: axiosMethods,
+  url: string,
+  params?: params,
+  data?: object,
+  headers: object = {},
+): AxiosRequestConfig => {
+  if (params) {
+    const query = Object.keys(params)
+      .map(
+        (k: string) =>
+          encodeURIComponent(k) + '=' + encodeURIComponent(params[k]),
+      )
+      .join('&');
+    url += `?${query}`;
+  }
+  const config: AxiosRequestConfig = { method, url, headers };
+  if (data) {
+    config.data = data;
+  }
+
+  return config;
+};
+
+export const getPaginationOptions = (page: number, limit: number) => {
+  return {
+    take: limit,
+    skip: (page - 1) * limit,
+  };
 };

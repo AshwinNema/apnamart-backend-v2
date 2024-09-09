@@ -16,29 +16,46 @@ model WishList {
   archive   Boolean  @default(false)
 }
 
+model UserAddress {
+  id           Int         @id @default(autoincrement())
+  user         User        @relation(fields: [userId], references: [id])
+  userId       Int         @unique
+  latitude     Decimal
+  longtitude   Decimal
+  addressType  AddressType
+  addressLine1 String
+  addressLine2 String
+  otherAddress String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  archive      Boolean     @default(false)
+}
+
 model User {
-  id                      Int                       @id @default(autoincrement())
-  name                    String
-  email                   String                    @unique
-  password                String?
-  userRoles               UserRole[]
-  address                 String?
-  phoneNo                 String?
-  photo                   String?
-  cloudinary_public_id    String?
-  cart                    Cart?
-  wishList                WishList?
-  merchant                MerchantDetails?
-  token                   Token[]
-  category                Category[]
-  subCategory             SubCategory[]
-  subCategoryfilter       SubCategoryFilter[]
-  product                 Product[]
-  subCategoryFilterOption SubCategoryFilterOption[]
-  orderMerchant           Order[]                   @relation("OrderMerchant")
-  orderCustomer           Order[]                   @relation("OrderCustomer")
-  createdAt               DateTime                  @default(now())
-  updatedAt               DateTime                  @updatedAt
-  isBlackListed           Boolean                   @default(false)
-  archive                 Boolean                   @default(false)
+  id                   Int                @id @default(autoincrement())
+  name                 String
+  email                String             @unique
+  password             String?
+  userRoles            UserRole[]
+  phoneNo              String?
+  photo                String?
+  cloudinary_public_id String?
+  cart                 Cart?
+  address              UserAddress?
+  wishList             WishList?
+  merchant             MerchantDetails?
+  token                Token[]
+  category             Category[]
+  subCategory          SubCategory[]
+  itemfilter           ItemFilter[]
+  product              Product[]
+  itemFilterOption     ItemFilterOption[]
+  orderMerchant        Order[]            @relation("OrderMerchant")
+  orderCustomer        Order[]            @relation("OrderCustomer")
+  deliveryArea         DeliveryArea[]
+  items                Item[]
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  isBlackListed        Boolean            @default(false)
+  archive              Boolean            @default(false)
 }
