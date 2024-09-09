@@ -43,7 +43,7 @@ model User {
   cart                 Cart?
   address              UserAddress?
   wishList             WishList?
-  merchant             MerchantDetails?
+  merchantDetails      MerchantDetails?
   token                Token[]
   category             Category[]
   subCategory          SubCategory[]

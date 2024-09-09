@@ -33,7 +33,6 @@ import {
   subCategoryCreateProcessor,
   UpdateSubCatValidator,
 } from './utils';
-import * as _ from 'lodash';
 import { CommonService } from 'src/common/common.service';
 import { SearchByName } from 'src/validations';
 @Controller('subcategory')

@@ -22,7 +22,11 @@ import {
   SearchByName,
   UpdateItem,
 } from 'src/validations';
-import { DeleteItemValidatorPipe, getQueryItemArgs, UpdateItemValidator } from './utils';
+import {
+  DeleteItemValidatorPipe,
+  getQueryItemArgs,
+  UpdateItemValidator,
+} from './utils';
 import { Roles } from 'src/auth/role/role.guard';
 import { UserRole } from '@prisma/client';
 import { RequestProcessor } from 'src/decorators';
@@ -85,7 +89,7 @@ export class ItemController {
     @Param('id', ParseIntPipe) id: number,
     @Body() _: UpdateItem,
     @RequestProcessor() { body },
-  ) { 
+  ) {
     return this.itemService.updateItemById(id, body);
   }
   @Delete(':id')
