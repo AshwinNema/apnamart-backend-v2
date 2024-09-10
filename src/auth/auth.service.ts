@@ -37,10 +37,7 @@ export class AuthService {
   async login(loginCredentails: LoginValidator) {
     const user = await this.userService.findUnique(
       { email: loginCredentails.email },
-      {
-        ...getLoginOptions(loginCredentails.role),
-        omit: { password: false },
-      },
+      getLoginOptions(loginCredentails.role),
     );
     if (!user) {
       throw new NotFoundException('User not found');

@@ -78,6 +78,7 @@ export const getLoginOptions = (role: UserRole) => {
             },
           },
         },
+        omit: { password: false },
       };
     default:
       return {};
