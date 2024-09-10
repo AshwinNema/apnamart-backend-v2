@@ -68,6 +68,7 @@ export interface twitterRequestTokenResponse {
 }
 
 export const getLoginOptions = (role: UserRole) => {
+  const defaultOptions = { omit: { password: false } };
   switch (role) {
     case UserRole.merchant:
       return {
@@ -78,9 +79,9 @@ export const getLoginOptions = (role: UserRole) => {
             },
           },
         },
-        omit: { password: false },
+        ...defaultOptions,
       };
     default:
-      return {};
+      return defaultOptions;
   }
 };
