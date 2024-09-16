@@ -8,8 +8,6 @@ import {
   Post,
   Put,
   Query,
-  UploadedFile,
-  UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 import { ItemService } from './item.service';
@@ -21,6 +19,7 @@ import {
   QueryItems,
   SearchByName,
   UpdateItem,
+  ItemFileUpload,
 } from 'src/validations';
 import {
   DeleteItemValidatorPipe,
@@ -36,7 +35,6 @@ import {
   ValidateAndTransformCreateDataPipe,
   UpdateItemPayloadTransformPipe,
 } from './utils';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller()
 export class ItemController {
@@ -68,12 +66,12 @@ export class ItemController {
 
   @Put('image/:id')
   @Roles(UserRole.admin)
-  @UseInterceptors(FileInterceptor('file'))
+  @FormDataRequest()
   updateItemFilter(
-    @UploadedFile() file: Express.Multer.File,
+    @Body() body: ItemFileUpload,
     @Param('id', ParseIntPipe) id: number,
   ) {
-    return this.itemService.updateItemImg(id, file);
+    return this.itemService.updateItemImg(id, body.file);
   }
 
   @Get('search-by-name')

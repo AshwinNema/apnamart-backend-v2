@@ -6,3 +6,4 @@ export * from './user.validation';
 export * from './delivery-location.validation';
 export * from './item-validation';
 export * from './subcategory.validation';
+export * from './merchant.validtion';

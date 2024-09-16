@@ -25,9 +25,14 @@ export class CloudinaryService {
     return cloudinary.uploader.destroy(public_id);
   }
 
-  async deletePrismaEntityFile(entity: string, id: number) {
+  async deletePrismaEntityFile(
+    entity: string,
+    id?: number,
+    whereCond?: object,
+  ) {
+    const idCond = id ? { id } : {};
     const entityData = await prisma[entity].findUnique({
-      where: { id },
+      where: { ...idCond, ...whereCond },
     });
     if (!entityData) {
       throw new NotFoundException(
@@ -35,7 +40,8 @@ export class CloudinaryService {
       );
     }
     const { cloudinary_public_id } = entityData;
-    return this.deleteFile(cloudinary_public_id);
+    await this.deleteFile(cloudinary_public_id);
+    return entityData;
   }
 
   async updatePrismaEntityFile(
