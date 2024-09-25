@@ -10,9 +10,10 @@ import { UploaderModule } from 'src/uploader/uploader.module';
 import { UserService } from './user/user.service';
 import { UserController } from './user/user.controller';
 import { UserAddressService } from './user/user-address.service';
+import { CommunicationModule } from 'src/communication/communication.module';
 
 @Module({
-  imports: [NestjsFormDataModule, UploaderModule],
+  imports: [NestjsFormDataModule, UploaderModule, CommunicationModule],
   providers: [
     MerchantService,
     AdminService,

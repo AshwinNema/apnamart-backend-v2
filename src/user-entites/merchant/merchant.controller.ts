@@ -1,13 +1,5 @@
-import {
-  Body,
-  Controller,
-  Param,
-  ParseIntPipe,
-  Post,
-  Put,
-  UsePipes,
-} from '@nestjs/common';
-import { UserRole } from '@prisma/client';
+import { Body, Controller, Post, Put, UsePipes } from '@nestjs/common';
+import { MerchantRegistrationStatus, UserRole } from '@prisma/client';
 import { FormDataRequest } from 'nestjs-form-data';
 import { Roles } from 'src/auth/role/role.guard';
 import { RequestProcessor, User } from 'src/decorators';
@@ -51,6 +43,13 @@ export class MerchantController {
   @Put('registration')
   @Roles(UserRole.merchant)
   updateMerchantDetails(@Body() body: MerchantDetails, @User() user) {
-    return this.merchantService.updateMerchantRegistration(user.id, body);
+    return this.merchantService.updateMerchantRegistration(
+      user.id,
+      body,
+      {
+        registrationStatus: { not: MerchantRegistrationStatus.review_by_admin },
+      },
+      'Details cannot be updated when details are being edited by the admin',
+    );
   }
 }

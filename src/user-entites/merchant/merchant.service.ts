@@ -1,5 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import {
+  MerchantRegistrationStatus,
+  NotificationEntity,
+  Prisma,
+} from '@prisma/client';
+import { NotificationService } from 'src/communication/notification/notification.service';
 import prisma from 'src/prisma/client';
 import { CloudinaryService } from 'src/uploader/cloudinary/cloudinary.service';
 import { CloudinaryResponse } from 'src/utils/types';
@@ -7,7 +12,10 @@ import { MerchantDetails } from 'src/validations';
 
 @Injectable()
 export class MerchantService {
-  constructor(private cloudinaryService: CloudinaryService) {}
+  constructor(
+    private cloudinaryService: CloudinaryService,
+    private notificationService: NotificationService,
+  ) {}
 
   async createRegistration(
     body: Prisma.MerchantDetailsCreateInput,
@@ -16,7 +24,7 @@ export class MerchantService {
     const uploadedFile: CloudinaryResponse =
       await this.cloudinaryService.uploadFile(file);
 
-    return prisma.merchantDetails.create({
+    const registration = await prisma.merchantDetails.create({
       data: {
         ...body,
         photo: uploadedFile.secure_url,
@@ -26,6 +34,14 @@ export class MerchantService {
         cloudinary_public_id: true,
       },
     });
+
+    await this.notificationService.createNotification({
+      description: `New business is registered - ${registration.name}. Please review details`,
+      entity: NotificationEntity.merchant_registration,
+      entityModelId: registration.id,
+    });
+
+    return registration;
   }
 
   async updateRegistrationImg(userId: number, file: Express.Multer.File) {
@@ -33,8 +49,15 @@ export class MerchantService {
       await this.cloudinaryService.deletePrismaEntityFile(
         'merchantDetails',
         undefined,
-        { userId },
+        {
+          userId,
+          registrationStatus: {
+            not: MerchantRegistrationStatus.review_by_admin,
+          },
+        },
+        'Cannot update image while admin is reviewing your details',
       );
+
     return this.cloudinaryService.updatePrismaEntityFile(
       'merchantDetails',
       registrationData.id,
@@ -42,14 +65,25 @@ export class MerchantService {
     );
   }
 
-  async updateMerchantRegistration(userId: number, body: MerchantDetails) {
-    const data = await prisma.merchantDetails.update({
-      where: { userId },
-      data: body,
-    });
-    if (!data) {
-      throw new BadRequestException('Merchant Registration not found');
+  async updateMerchantRegistration(
+    userId: number,
+    body: MerchantDetails,
+    whereCond: object = {},
+    err = 'Merchant Registration not found',
+  ) {
+    let data;
+    try {
+      data = await prisma.merchantDetails.update({
+        where: {
+          userId,
+          ...whereCond,
+        },
+        data: body,
+      });
+    } catch (_) {
+      throw new BadRequestException(err);
     }
+
     return data;
   }
 }

@@ -73,11 +73,7 @@ export const getLoginOptions = (role: UserRole) => {
     case UserRole.merchant:
       return {
         include: {
-          merchantDetails: {
-            select: {
-              isRegistreationCompleted: true,
-            },
-          },
+          merchantDetails: true,
         },
         ...defaultOptions,
       };

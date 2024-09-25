@@ -29,6 +29,7 @@ export class CloudinaryService {
     entity: string,
     id?: number,
     whereCond?: object,
+    err?: string,
   ) {
     const idCond = id ? { id } : {};
     const entityData = await prisma[entity].findUnique({
@@ -36,7 +37,7 @@ export class CloudinaryService {
     });
     if (!entityData) {
       throw new NotFoundException(
-        'Data for the given prisma prisma entity not found',
+        err || 'Data for the given prisma prisma entity not found',
       );
     }
     const { cloudinary_public_id } = entityData;
