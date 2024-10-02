@@ -11,7 +11,7 @@ import { CloudinaryResponse } from 'src/utils/types';
 import { MerchantDetails } from 'src/validations';
 
 @Injectable()
-export class MerchantService {
+export class MerchantRegistrationService {
   constructor(
     private cloudinaryService: CloudinaryService,
     private notificationService: NotificationService,

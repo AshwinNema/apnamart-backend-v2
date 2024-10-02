@@ -15,6 +15,10 @@ import {
 import { TokenTypes } from '@prisma/client';
 import prisma from 'src/prisma/client';
 import { UserService } from 'src/user-entites/user/user.service';
+import {
+  TokenVerificationService,
+  verifyTokenErrs,
+} from './token/token-verification.service';
 
 @Injectable()
 export class Auth2Service {
@@ -22,15 +26,17 @@ export class Auth2Service {
   constructor(
     private tokenService: TokenService,
     private tokenService2: TokenService2,
+    private tokenVerificationService: TokenVerificationService,
     private configService: ConfigService,
     private userService: UserService,
   ) {}
 
   async refreshToken(tokenDetails: RefreshTokenValidator) {
-    const token = await this.tokenService.verifyToken(
+    const token = await this.tokenVerificationService.verifyToken(
       tokenDetails.token,
       TokenTypes.refresh,
       this.configService.get('jwt').refresh_secret,
+      verifyTokenErrs.http,
       new UnauthorizedException('Forbidden'),
     );
     this.tokenService2.deleteOneToken({ id: token.id });

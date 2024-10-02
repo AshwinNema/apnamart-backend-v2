@@ -7,4 +7,5 @@ export class NotificationService {
   async createNotification(data: Prisma.NotificationCreateInput) {
     return prisma.notification.create({ data });
   }
+  async getAllNotifications() {}
 }

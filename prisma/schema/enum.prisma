@@ -41,6 +41,13 @@ enum CommunicationStatus {
   read
 }
 
+enum ChatMsgStatus {
+  notReceived
+  sent
+  delivered
+  read
+}
+
 enum MerchantRegistrationStatus {
   review_by_admin
   review_by_merchant
