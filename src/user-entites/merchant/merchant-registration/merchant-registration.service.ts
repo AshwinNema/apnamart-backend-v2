@@ -8,7 +8,7 @@ import { NotificationService } from 'src/communication/notification/notification
 import prisma from 'src/prisma/client';
 import { CloudinaryService } from 'src/uploader/cloudinary/cloudinary.service';
 import { CloudinaryResponse } from 'src/utils/types';
-import { MerchantDetails } from 'src/validations';
+import { MerchantRegistrationDetails } from 'src/validations';
 
 @Injectable()
 export class MerchantRegistrationService {
@@ -67,7 +67,7 @@ export class MerchantRegistrationService {
 
   async updateMerchantRegistration(
     userId: number,
-    body: MerchantDetails,
+    body: MerchantRegistrationDetails,
     whereCond: object = {},
     err = 'Merchant Registration not found',
   ) {

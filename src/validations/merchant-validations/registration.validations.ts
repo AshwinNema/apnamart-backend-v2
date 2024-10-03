@@ -1,10 +1,23 @@
-import { IsNotEmpty, IsString, Validate } from 'class-validator';
-import { CustomDigitLengthValidator, LatLng } from './common.validation';
-import { Transform } from 'class-transformer';
+import {
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Min,
+  Validate,
+} from 'class-validator';
+import {
+  CustomDigitLengthValidator,
+  LatLng,
+  paginationOptions,
+} from '../common.validation';
+import { Transform, Type } from 'class-transformer';
 import { HasMimeType, IsFile, MaxFileSize } from 'nestjs-form-data';
 import { mimeTypes } from 'src/utils';
+import { MerchantRegistrationStatus } from '@prisma/client';
 
-export class MerchantDetails extends LatLng {
+export class MerchantRegistrationDetails extends LatLng {
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -51,8 +64,24 @@ export class MerchantRegistrationFile {
   file: Express.Multer.File;
 }
 
-export class CreateMerchantDetails extends MerchantRegistrationFile {
+export class CreateMerchantRegistration extends MerchantRegistrationFile {
   @IsString()
   @IsNotEmpty()
   data: string;
+}
+
+export class QueryMerchantRegistrations extends paginationOptions {
+  @IsOptional()
+  @IsString()
+  name: string;
+
+  @Min(1)
+  @IsInt()
+  @Type(() => Number)
+  @IsOptional()
+  id: number;
+
+  @IsOptional()
+  @IsEnum(MerchantRegistrationStatus)
+  registrationStatus: MerchantRegistrationStatus;
 }

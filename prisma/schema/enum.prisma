@@ -50,6 +50,5 @@ enum ChatMsgStatus {
 
 enum MerchantRegistrationStatus {
   review_by_admin
-  review_by_merchant
   completed
 }

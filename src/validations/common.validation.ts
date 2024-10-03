@@ -39,6 +39,11 @@ export const validateObject = async <T extends object>(
   }
 };
 
+export interface paginationOptionsInterface {
+  limit: number;
+  page: number;
+}
+
 export class paginationOptions {
   @Min(1)
   @IsInt()
